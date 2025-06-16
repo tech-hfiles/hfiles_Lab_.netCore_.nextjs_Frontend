@@ -93,19 +93,21 @@ body.loading-indicator #global-loader {
   scrollbar-color: #cbd5e1 #f1f5f9;
 }
 
-/* Webkit browsers (Chrome, Safari, Edge) */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
+
 
 .custom-scrollbar::-webkit-scrollbar-track {
   background: #f1f5f9;
   border-radius: 3px;
 }
 
+/* Tailwind-compatible custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 3px;
+  background-color: #cbd5e0; /* Tailwind's gray-300 */
+  border-radius: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {

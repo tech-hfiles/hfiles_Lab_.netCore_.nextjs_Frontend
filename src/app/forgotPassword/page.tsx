@@ -195,7 +195,7 @@ const ForgotPasswordPage = () => {
           An OTP has been sent to your email: <span className="text-blue-900">{maskEmail(email)}</span>
         </p>
 
-        {step === 1 ? (
+        {step === 2 ? (
           <form onSubmit={otpFormik.handleSubmit} className="space-y-6">
 
             {/* OTP Inputs */}

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { AdminLogin, UserCardList , UserForgotPassword} from "@/services/labServiceApi";
+import { AdminLogin, UserCardList, UserForgotPassword } from "@/services/labServiceApi";
 import { toast, ToastContainer } from "react-toastify";
 import Home from "../components/Home";
 import { useRouter } from "next/navigation";
@@ -98,32 +98,29 @@ const AdminLogins = () => {
     CardList();
   }, [])
 
-const handleForgotPassword = async (email: string) => {
-  try {
-    const payload = {
-      email,
-      labId: userId,
-    };
+  const handleForgotPassword = async (email: string) => {
+    try {
+      const payload = {
+        email,
+        labId: userId,
+      };
 
-    const response = await UserForgotPassword(payload);
-      localStorage.setItem("recipientEmail", email); 
+      const response = await UserForgotPassword(payload);
+      localStorage.setItem("recipientEmail", email);
       toast.success(response.data.message);
       router.push("/forgotUserPassword");
-  } catch (error) {
-    console.error("Error during forgot password:", error);
-  }
-};
+    } catch (error) {
+      console.error("Error during forgot password:", error);
+    }
+  };
 
-
-
-console.log(cardListData,"cardListData")
 
   return (
     <Home>
-      <div className="flex flex-col lg:flex-row min-h-[calc(100vh-112px)]" style={{ background: 'linear-gradient(to bottom, white 70%, #67e8f9 100%)' }}>
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-3 sm:p-4 md:p-4 lg:p-4">
-          <div className="bg-white rounded-xl shadow-lg w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl 2xl:max-w-2xl border overflow-y-auto custom-scrollbar p-4 sm:p-4 md:p-4">
-            
+      <div className="flex flex-col lg:flex-row h-[calc(100vh-80px)] sm:h-[calc(100vh-90px)]  md:h-[calc(100vh-100px)] lg:h-[calc(100vh-139px)]" style={{ background: 'linear-gradient(to bottom, white 70%, #67e8f9 100%)' }}>
+        <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-4 sm:p-4 md:p-4 lg:p-4 2xl:p-4 order-first lg:order-last h-full">
+          <div className="bg-white rounded-xl shadow-lg w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl 2xl:max-w-2xl border p-4 sm:p-4 md:p-4 h-full overflow-y-auto custom-scrollbar">
+
             <h1 className="text-lg sm:text-xl md:text-2xl lg:text-2xl 2xl:text-3xl font-bold text-blue-700 text-center mb-2">
               Select your profile to login
             </h1>
@@ -136,7 +133,7 @@ console.log(cardListData,"cardListData")
             <h2 className="text-base sm:text-lg md:text-lg lg:text-xl font-semibold text-blue-700 mb-3 sm:mb-4">
               Admins
             </h2>
-            
+
             <div className="space-y-3 sm:space-y-4">
               <div
                 key={cardListData.userId}
@@ -206,7 +203,7 @@ console.log(cardListData,"cardListData")
                 )}
               </div>
 
-             {selectedHfid === cardListData.hfid && (
+              {selectedHfid === cardListData.hfid && (
                 <div
                   className="text-xs sm:text-sm font-bold text-blue-700 flex justify-end pr-1 sm:pr-2 cursor-pointer hover:text-blue-800 transition-colors"
                   onClick={() => {
@@ -226,7 +223,7 @@ console.log(cardListData,"cardListData")
             <h2 className="text-base sm:text-lg md:text-lg lg:text-xl font-semibold text-blue-700 mb-3 sm:mb-4 mt-4 sm:mt-6">
               Team Members
             </h2>
-            
+
             <div className="space-y-3 sm:space-y-4">
               {memberListData.map((user) => (
                 <div key={user.userId}>
@@ -298,7 +295,14 @@ console.log(cardListData,"cardListData")
                   </div>
 
                   {selectedHfid === user.hfid && (
-                    <div className="text-xs sm:text-sm font-bold text-blue-700 flex justify-end mt-1 pr-1 cursor-pointer hover:text-blue-800 transition-colors">
+                    <div className="text-xs sm:text-sm font-bold text-blue-700 flex justify-end mt-1 pr-1 cursor-pointer hover:text-blue-800 transition-colors"
+                      onClick={() => {
+                        if (!user.email) {
+                          toast.error("Email not found for this user.");
+                          return;
+                        }
+                        handleForgotPassword(user.email);
+                      }}>
                       Forgot password
                     </div>
                   )}
@@ -324,7 +328,7 @@ console.log(cardListData,"cardListData")
           </p>
         </div>
       </div>
-      
+
       <ToastContainer />
     </Home>
   );

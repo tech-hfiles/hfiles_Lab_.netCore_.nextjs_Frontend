@@ -9,7 +9,7 @@ import Home from "../components/Home";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faLock } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/navigation';
-import {  LoginOTP,  UserForgotPassword , ForgotPasswordUser} from '@/services/labServiceApi';
+import {  LoginOTP,  UserForgotPassword , ForgotPasswordUser , UserOTPVerify} from '@/services/labServiceApi';
 
 const ForgotPasswordUserPage = () => {
   const [step, setStep] = useState(1);
@@ -45,7 +45,7 @@ const ForgotPasswordUserPage = () => {
     onSubmit: async (values) => {
       try {
         setIsVerifyingOtp(true);
-        const response = await LoginOTP({
+        const response = await UserOTPVerify({
           email: email,
           otp: values.otp,
         });

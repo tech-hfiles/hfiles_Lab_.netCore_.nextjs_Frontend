@@ -40,15 +40,35 @@ const LoginPage = () => {
     };
   }, [showOtp, timers]);
 
+  const isEmail = (input: string) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(input);
+  };
 
-  const emailValidationSchema = Yup.object({
-    email: Yup.string()
-      .matches(
-        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-        "Please enter a valid email address"
-      )
-      .required("Email is required"),
+  const isPhoneNumber = (input: string) => {
+    const phoneRegex = /^[+]?[\d\s\-\(\)]{10,15}$/;
+    return phoneRegex.test(input.replace(/\s/g, ''));
+  };
+
+
+  // const emailValidationSchema = Yup.object({
+  //   email: Yup.string()
+  //     .matches(
+  //       /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+  //       "Please enter a valid email address"
+  //     )
+  //     .required("Email is required"),
+  // });
+  const emailValidationSchema =  Yup.object({
+    emailOrPhone: Yup.string()
+      .required("Email or Phone number is required")
+      .test('email-or-phone', 'Please enter a valid email address or phone number', function(value) {
+        if (!value) return false;
+        return isEmail(value) || isPhoneNumber(value);
+      }),
   });
+
+
 
   const otpValidationSchema = Yup.object({
     otp: Yup.string()
@@ -64,17 +84,22 @@ const LoginPage = () => {
 
   const emailFormik = useFormik({
     initialValues: {
-      email: "",
+       emailOrPhone: "",
     },
     validationSchema: emailValidationSchema,
     onSubmit: async (values) => {
       setIsSubmittingOTP(true);
       try {
-        const res = await SendOTP({
-          email: values.email,
-        });
+         const payload: { email?: string; phoneNumber?: string } = {};
+
+          if (isEmail(values.emailOrPhone)) {
+          payload.email = values.emailOrPhone;
+        } else {
+          payload.phoneNumber = values.emailOrPhone;
+        }
+        const res = await SendOTP(payload);
         toast.success(`${res.data.message}`);
-        localStorage.setItem("emailId", values.email);
+        localStorage.setItem("emailId", values.emailOrPhone);
       } catch (error) {
         const err = error as any;
         toast.error(`${err.res.data.message}`);
@@ -88,16 +113,19 @@ const LoginPage = () => {
 
   const otpFormik = useFormik({
     initialValues: {
-      email: "",
+      emailOrPhone: "",
       otp: "",
     },
     validationSchema: otpValidationSchema,
     onSubmit: async (values) => {
       try {
+        const isEmail = emailFormik.values.emailOrPhone.includes('@');
         const response = await LoginOTP({
-          email: emailFormik.values.email,
-          otp: values.otp,
-        });
+  ...(isEmail
+    ? { email: emailFormik.values.emailOrPhone }
+    : { phoneNumber: emailFormik.values.emailOrPhone }),
+  otp: values.otp,
+});
         toast.success(`${response.data.message}`);
         localStorage.setItem("emailId", response?.data?.data?.email);
         localStorage.setItem("userId", response.data.data.userId);
@@ -161,18 +189,18 @@ const LoginPage = () => {
         console.error(`${err.res.data.message}`);
       }
     } else {
-      emailFormik.setTouched({ email: true });
+      emailFormik.setTouched({ emailOrPhone: true });
     }
   };
 
   const handlePasswordLogin = () => {
     emailFormik.validateForm().then((errors) => {
       if (Object.keys(errors).length === 0) {
-        passwordLoginFormik.setFieldValue("email", emailFormik.values.email);
+        passwordLoginFormik.setFieldValue("email", emailFormik.values.emailOrPhone);
         setShowPasswordLogin(true);
         setShowOtp(false);
       } else {
-        emailFormik.setTouched({ email: true });
+        emailFormik.setTouched({ emailOrPhone: true });
       }
     });
   };
@@ -205,7 +233,7 @@ const LoginPage = () => {
   const handleForgotPassword = async () => {
     let email = showPasswordLogin
       ? passwordLoginFormik.values.email
-      : emailFormik.values.email;
+      : emailFormik.values.emailOrPhone;
 
     const emailSchema = Yup.string()
       .matches(
@@ -235,7 +263,7 @@ const LoginPage = () => {
 
   return (
     <Home>
-      <div className="w-full h-[calc(100vh-112px)] flex flex-col items-center justify-center " style={{
+      <div className="w-full h-[calc(100vh-112px)] h-[calc(100vh-80px)] sm:h-[calc(100vh-90px)]  md:h-[calc(100vh-100px)] lg:h-[calc(100vh-139px)] flex flex-col items-center justify-center " style={{
         background: 'linear-gradient(to bottom, white 70%, #67e8f9 100%)'
       }}>
         <h1 className="text-xl md:text-lg font-semibold text-red-600  text-center">
@@ -274,23 +302,23 @@ const LoginPage = () => {
             {!showOtp && !showPasswordLogin && (
               <form onSubmit={emailFormik.handleSubmit} className="w-full px-6">
                 <div className="w-full mb-2">
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="User ID / Email ID"
-                    value={emailFormik.values.email}
+                   <input
+                    type="text"
+                    id="emailOrPhone"
+                    name="emailOrPhone"
+                    placeholder="Email ID / Phone Number"
+                    value={emailFormik.values.emailOrPhone}
                     onChange={emailFormik.handleChange}
                     onBlur={emailFormik.handleBlur}
-                    className={`w-full px-4 py-3 rounded-md text-gray-800 focus:outline-none border ${emailFormik.touched.email && emailFormik.errors.email
+                    className={`w-full px-4 py-3 rounded-md text-gray-800 focus:outline-none border ${emailFormik.touched.emailOrPhone && emailFormik.errors.emailOrPhone
                       ? "border-red-500"
                       : "border-black"
                       }`}
                   />
                 </div>
-                {emailFormik.touched.email && emailFormik.errors.email && (
+                {emailFormik.touched.emailOrPhone && emailFormik.errors.emailOrPhone && (
                   <div className="text-red-500 text-xs mb-2">
-                    {emailFormik.errors.email}
+                    {emailFormik.errors.emailOrPhone}
                   </div>
                 )}
 
@@ -324,7 +352,7 @@ const LoginPage = () => {
             {showOtp && (
               <form onSubmit={otpFormik.handleSubmit} className="w-full px-6">
                 <div className="w-full mb-4 bg-gray-100 px-4 py-3 rounded-md text-gray-800 border border-gray-300">
-                  {emailFormik.values.email}
+                  {emailFormik.values.emailOrPhone}
                 </div>
 
                 <div className="w-full mb-2">

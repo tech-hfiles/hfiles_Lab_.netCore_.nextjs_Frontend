@@ -3,11 +3,12 @@ import React, { useEffect, useState } from "react";
 import DefaultLayout from '../components/DefaultLayout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleMinus, faUserPlus, faUsers } from '@fortawesome/free-solid-svg-icons';
-import { AddMember, DeleteMember , PromoteSuperAdmin } from "@/services/labServiceApi";
+import { AddMember, DeleteMember, PromoteSuperAdmin } from "@/services/labServiceApi";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
 import { toast, ToastContainer } from "react-toastify";
 import AddTeamMemberModal from "./components/AddTeamMemberModal";
+import GenericConfirmModal from "../components/GenericConfirmModal";
 
 
 interface PageProps {
@@ -20,13 +21,15 @@ const Page: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
   const [showCheckboxes, setShowCheckboxes] = useState(false);
   const [superCheckBox, setSuperCheckBox] = useState(false)
   const [manageMode, setManageMode] = useState(false);
-    const [adminMode, setAdminMode] = useState(false);
+  const [adminMode, setAdminMode] = useState(false);
   const [showAddMemberModal, setShowAddMemberModal] = useState(false) as any;
-const [submitType, setSubmitType] = useState<'admin' | 'superAdmin' | null>(null);
-
+  const [submitType, setSubmitType] = useState<'admin' | 'superAdmin' | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedMemberId, setSelectedMemberId] = useState<Number | null>(null);
+  const [selectedMemberIds, setSelectedMemberIds] = useState<Number | null>(null);
+  const [isModalOpens, setIsModalOpens] = useState(false);
 
   const userId = localStorage.getItem("userId");
-
 
   const BASE_URL = "https://hfiles.in/upload/";
 
@@ -59,7 +62,6 @@ const [submitType, setSubmitType] = useState<'admin' | 'superAdmin' | null>(null
           const response = await AddMember(payload);
           toast.success(`${response.data.message}`);
         } else if (submitType === 'superAdmin') {
-          // PromoteSuperAdmin expects a single memberId, so handle one member only:
           if (values.selectedMembers.length !== 1) {
             toast.error("Please select exactly one member to promote as Super Admin.");
             return;
@@ -156,47 +158,47 @@ const [submitType, setSubmitType] = useState<'admin' | 'superAdmin' | null>(null
                           alt={member.name}
                           className={`w-full h-full object-cover rounded ${showCheckboxes || superCheckBox ? 'opacity-40' : ''}`}
                         />
-                        {(showCheckboxes || superCheckBox) && 
-                                                          (superCheckBox ? true : member.role !== "Admin") && (
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <input
-                              type="checkbox"
-                              checked={isChecked}
-                              // onChange={() => {
-                              //   const selected = formik.values.selectedMembers;
-                              //   if (selected.includes(member.memberId)) {
-                              //     formik.setFieldValue(
-                              //       'selectedMembers',
-                              //       selected.filter(id => id !== member.memberId)
-                              //     );
-                              //   } else {
-                              //     formik.setFieldValue(
-                              //       'selectedMembers',
-                              //       [...selected, member.memberId]
-                              //     );
-                              //   }
-                              // }}
-                               onChange={() => {
-                                    if (superCheckBox) {
-                                      // When superCheckBox is active, only select one member (replace selectedMembers)
-                                      formik.setFieldValue('selectedMembers', [member.memberId]);
+                        {(showCheckboxes || superCheckBox) &&
+                          (superCheckBox ? true : member.role !== "Admin") && (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <input
+                                type="checkbox"
+                                checked={isChecked}
+                                // onChange={() => {
+                                //   const selected = formik.values.selectedMembers;
+                                //   if (selected.includes(member.memberId)) {
+                                //     formik.setFieldValue(
+                                //       'selectedMembers',
+                                //       selected.filter(id => id !== member.memberId)
+                                //     );
+                                //   } else {
+                                //     formik.setFieldValue(
+                                //       'selectedMembers',
+                                //       [...selected, member.memberId]
+                                //     );
+                                //   }
+                                // }}
+                                onChange={() => {
+                                  if (superCheckBox) {
+                                    // When superCheckBox is active, only select one member (replace selectedMembers)
+                                    formik.setFieldValue('selectedMembers', [member.memberId]);
+                                  } else {
+                                    // Normal multiple selection toggle
+                                    const selected = formik.values.selectedMembers;
+                                    if (selected.includes(member.memberId)) {
+                                      formik.setFieldValue(
+                                        'selectedMembers',
+                                        selected.filter(id => id !== member.memberId)
+                                      );
                                     } else {
-                                      // Normal multiple selection toggle
-                                      const selected = formik.values.selectedMembers;
-                                      if (selected.includes(member.memberId)) {
-                                        formik.setFieldValue(
-                                          'selectedMembers',
-                                          selected.filter(id => id !== member.memberId)
-                                        );
-                                      } else {
-                                        formik.setFieldValue('selectedMembers', [...selected, member.memberId]);
-                                      }
+                                      formik.setFieldValue('selectedMembers', [...selected, member.memberId]);
                                     }
-                                  }}
-                              className="w-6 h-6 bg-green-600 text-white accent-green-600 rounded border-2 border-white shadow-lg"
-                            />
-                          </div>
-                        )}
+                                  }
+                                }}
+                                className="w-6 h-6 bg-green-600 text-white accent-green-600 rounded border-2 border-white shadow-lg"
+                              />
+                            </div>
+                          )}
 
                       </div>
 
@@ -213,10 +215,14 @@ const [submitType, setSubmitType] = useState<'admin' | 'superAdmin' | null>(null
 
                     {/* Remove Member Button */}
                     {adminMode && member.role === "Admin" && (
-                    <div className="flex justify-end mt-2">
+                      <div className="flex justify-end mt-2">
                         <button
                           type="button"
-                          onClick={() => handleRemoveMember(member.memberId)}
+                          // onClick={() => handleRemoveMember(member.memberId)}
+                          onClick={() => {
+                            setSelectedMemberId(member.memberId);
+                            setIsModalOpen(true);
+                          }}
                           className="text-red-500 text-sm font-medium hover:text-red-700 hover:underline flex items-center gap-1 cursor-pointer"
                         >
                           Remove Admin
@@ -224,6 +230,24 @@ const [submitType, setSubmitType] = useState<'admin' | 'superAdmin' | null>(null
                         </button>
                       </div>
                     )}
+                    <GenericConfirmModal
+                      isOpen={isModalOpen}
+                      onClose={() => {
+                        setIsModalOpen(false);
+                        setSelectedMemberId(null);
+                      }}
+                      imageSrc="/Vector (1).png"
+                      title="Remove Admin?"
+                      message="They will lose access to the system. You can retrieve it from the system at any time."
+                      type="warning"
+                      onConfirm={() => {
+                        if (selectedMemberId) {
+                          handleRemoveMember(Number(selectedMemberId));
+                        }
+                        setIsModalOpen(false);
+                        setSelectedMemberId(null);
+                      }}
+                    />
 
                   </div>
                 );
@@ -234,25 +258,25 @@ const [submitType, setSubmitType] = useState<'admin' | 'superAdmin' | null>(null
 
         <div className="mt-2 flex justify-end mb-4 gap-3">
 
-           <button
-          className="primary text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700 flex items-center gap-2 cursor-pointer"
-          onClick={() => {
-            setSuperCheckBox(prev => !prev);
-          }}
-        >
-          <FontAwesomeIcon icon={faUserPlus} className="h-4 w-4" />
-          {superCheckBox ? "Cancel" : "Super Admin"}
-        </button>
           <button
-          className="primary text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700 flex items-center gap-2 cursor-pointer"
-          onClick={() => {
-            setShowCheckboxes(prev => !prev);
-            setAdminMode(prev => !prev);
-          }}
-        >
-          <FontAwesomeIcon icon={faUserPlus} className="h-4 w-4" />
-           {showCheckboxes ? "Cancel" : "Add Admin "}
-        </button>
+            className="primary text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700 flex items-center gap-2 cursor-pointer"
+            onClick={() => {
+              setSuperCheckBox(prev => !prev);
+            }}
+          >
+            <FontAwesomeIcon icon={faUserPlus} className="h-4 w-4" />
+            {superCheckBox ? "Cancel" : "Super Admin"}
+          </button>
+          <button
+            className="primary text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700 flex items-center gap-2 cursor-pointer"
+            onClick={() => {
+              setShowCheckboxes(prev => !prev);
+              setAdminMode(prev => !prev);
+            }}
+          >
+            <FontAwesomeIcon icon={faUserPlus} className="h-4 w-4" />
+            {showCheckboxes ? "Cancel" : "Add Admin "}
+          </button>
 
         </div>
 
@@ -312,23 +336,23 @@ const [submitType, setSubmitType] = useState<'admin' | 'superAdmin' | null>(null
                               //     );
                               //   }
                               // }}
-                               onChange={() => {
-                                      if (superCheckBox) {
-                                        // When superCheckBox is active, only select one member (replace selectedMembers)
-                                        formik.setFieldValue('selectedMembers', [member.memberId]);
-                                      } else {
-                                        // Normal multiple selection toggle
-                                        const selected = formik.values.selectedMembers;
-                                        if (selected.includes(member.memberId)) {
-                                          formik.setFieldValue(
-                                            'selectedMembers',
-                                            selected.filter(id => id !== member.memberId)
-                                          );
-                                        } else {
-                                          formik.setFieldValue('selectedMembers', [...selected, member.memberId]);
-                                        }
-                                      }
-                                    }}
+                              onChange={() => {
+                                if (superCheckBox) {
+                                  // When superCheckBox is active, only select one member (replace selectedMembers)
+                                  formik.setFieldValue('selectedMembers', [member.memberId]);
+                                } else {
+                                  // Normal multiple selection toggle
+                                  const selected = formik.values.selectedMembers;
+                                  if (selected.includes(member.memberId)) {
+                                    formik.setFieldValue(
+                                      'selectedMembers',
+                                      selected.filter(id => id !== member.memberId)
+                                    );
+                                  } else {
+                                    formik.setFieldValue('selectedMembers', [...selected, member.memberId]);
+                                  }
+                                }
+                              }}
                               className="w-6 h-6 bg-green-600 text-white accent-green-600 rounded border-2 border-white shadow-lg"
                             />
                           </div>
@@ -358,7 +382,11 @@ const [submitType, setSubmitType] = useState<'admin' | 'superAdmin' | null>(null
                       <div className="flex justify-end mt-2">
                         <button
                           type="button"
-                          onClick={() => handleRemoveMember(member.memberId)}
+                          // onClick={() => handleRemoveMember(member.memberId)}
+                          onClick={() => {
+                            setSelectedMemberIds(member.memberId);
+                            setIsModalOpens(true);
+                          }}
                           className="text-red-500 text-sm font-medium hover:text-red-700 hover:underline flex items-center gap-1 cursor-pointer"
                         >
                           Remove Member
@@ -366,6 +394,25 @@ const [submitType, setSubmitType] = useState<'admin' | 'superAdmin' | null>(null
                         </button>
                       </div>
                     )}
+
+                    <GenericConfirmModal
+                      isOpen={isModalOpens}
+                      onClose={() => {
+                        setIsModalOpens(false);
+                        setSelectedMemberIds(null);
+                      }}
+                      imageSrc="/Vector (1).png"
+                      title="Remove Member?"
+                      message="They will lose access to the system. You can retrieve it from the system at any time."
+                      type="warning"
+                      onConfirm={() => {
+                        if (selectedMemberIds) {
+                          handleRemoveMember(Number(selectedMemberIds));
+                        }
+                        setIsModalOpens(false);
+                        setSelectedMemberIds(null);
+                      }}
+                    />
                   </div>
                 );
               })}
@@ -386,10 +433,10 @@ const [submitType, setSubmitType] = useState<'admin' | 'superAdmin' | null>(null
               <div className="flex justify-center mt-6">
                 <button
                   type="submit"
-                    onClick={() => setSubmitType('admin')}
+                  onClick={() => setSubmitType('admin')}
                   className="bg-blue-800 text-white px-8 py-2 rounded-md text-lg font-semibold hover:bg-blue-900 transition cursor-pointer"
                 >
-                 Admin Submit
+                  Admin Submit
                 </button>
               </div>
             )}
@@ -398,14 +445,14 @@ const [submitType, setSubmitType] = useState<'admin' | 'superAdmin' | null>(null
               <div className="flex justify-center mt-6">
                 <button
                   type="submit"
-                   onClick={() => setSubmitType('superAdmin')}
+                  onClick={() => setSubmitType('superAdmin')}
                   className="bg-blue-800 text-white px-8 py-2 rounded-md text-lg font-semibold hover:bg-blue-900 transition cursor-pointer"
                 >
-                Super Admin Submit
+                  Super Admin Submit
                 </button>
               </div>
             )}
-            
+
           </form>
         </div>
       </div>

@@ -1,3 +1,4 @@
+'use client';
 import { faBell,  faCalendarAlt, faLessThan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState, useRef, useEffect } from 'react';
@@ -6,6 +7,9 @@ import CustomDatePicker from './Datepicker/CustomDatePicker';
 import { ListNotification } from '@/services/labServiceApi';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from 'next/navigation';
+import { LogOut, RotateCcw } from 'lucide-react';
+
 
 const LabHeader = () => {
   const username = localStorage.getItem("username")
@@ -19,6 +23,9 @@ const LabHeader = () => {
   const [notifyList, setNotifyList] = useState() as any;
   const [activeTab, setActiveTab] = useState<'today' | 'week' | 'all'>('today');
   const prevNotificationIds = useRef<Set<number>>(new Set());
+  const router = useRouter();
+    const [dropdownAnimating, setDropdownAnimating] = useState(false);
+
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -32,6 +39,7 @@ const LabHeader = () => {
   }, []);
 
   const handleLogout = () => {
+        setDropdownAnimating(true);
     window.location.href = '/labLogin';
     localStorage.removeItem("authToken");
     localStorage.removeItem("userId");
@@ -40,6 +48,13 @@ const LabHeader = () => {
     localStorage.removeItem("LabAdminId");
     localStorage.removeItem("switch");
   };
+
+
+  const handleRevert = () => {
+        setDropdownAnimating(true);
+  router.push("/revertMember&Branch"); 
+};
+
 
   const toggleDrawer = () => {
     setShowDrawer(!showDrawer);
@@ -170,16 +185,32 @@ const formatElapsedTime = (minutes: number): string => {
             className="h-10 w-10 rounded-full border-2 border-yellow-400 cursor-pointer"
             onClick={() => setDropdownOpen(!dropdownOpen)}
           />
-          {dropdownOpen && (
-            <div className="absolute right-0 mt-23 w-40 bg-white text-black rounded shadow-lg py-2 z-50">
-              <button
-                onClick={handleLogout}
-                className="w-full text-left px-4 py-2 hover:bg-gray-100"
-              >
-                Logout
-              </button>
-            </div>
-          )}
+        {dropdownOpen && (
+  <div
+    className={`absolute right-0 top-3 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50 transition-all duration-200 ${
+      dropdownAnimating ? 'opacity-0 translate-y-1' : 'opacity-100 translate-y-0'
+    }`}
+  >
+    <button
+      onClick={handleRevert}
+      className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150 cursor-pointer"
+    >
+      <RotateCcw size={14} className="mr-3 text-gray-500" />
+      Restore 
+    </button>
+
+    <hr className="my-1 border-gray-100" />
+
+    <button
+      onClick={handleLogout}
+      className="w-full flex items-center px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150 cursor-pointer"
+    >
+      <LogOut size={14} className="mr-3" />
+      Sign Out
+    </button>
+  </div>
+)}
+
         </div>
       </header>
 
@@ -226,9 +257,9 @@ const formatElapsedTime = (minutes: number): string => {
           </div>
           {/* Notification 1 */}
           <div className="space-y-3">
-            {notifyList?.map((item:any) => (
+            {notifyList?.map((item:any, index:any) => (
               <div  
-                key={item.reportType}
+               key={`${item.reportType}-${index}`}
               className="border border-gray-300 p-3 rounded-lg flex items-start space-x-4 bg-white shadow-sm">
                 {/* Icon */}
                 <div className="flex-shrink-0">

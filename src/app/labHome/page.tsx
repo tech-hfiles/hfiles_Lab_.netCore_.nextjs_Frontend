@@ -13,7 +13,7 @@ import DefaultLayout from "../components/DefaultLayout";
 import DatePicker from "react-datepicker";
 import CustomDatePicker from "../components/Datepicker/CustomDatePicker";
 import { useRouter } from "next/navigation";
-import { ListUser } from "@/services/labServiceApi";
+import { ListUser ,ListAllReports } from "@/services/labServiceApi";
 import { number } from "yup";
 import Tooltip from "../components/Tooltip";
 import Drawer from "../components/Drawer";
@@ -45,6 +45,7 @@ const page = () => {
     const userId = localStorage.getItem("userId");
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [patientCount , setPatientCount] = useState() as any;
+    const [allReport,setAllReports ] = useState() as any;
 
 
   const userList = async () => {
@@ -53,17 +54,28 @@ const page = () => {
     setPatientCount(response?.data?.data?.patientReports)
 
   }
-  const filteredData = patientData?.filter((patient) =>
+
+useEffect(() => {
+  const fetchReportsIfSearching = async () => {
+      const response = await ListAllReports();
+      setAllReports(response?.data?.data || []);
+  };
+  fetchReportsIfSearching();
+}, []);
+
+
+  // const filteredData = patientData?.filter((patient) =>
+  const filteredData = (searchQuery.trim() !== "" ? allReport : patientData)?.filter((patient:any) =>
     patient.hfid.toLowerCase().includes(searchQuery.toLowerCase()) ||
     patient.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const paginatedData = filteredData.slice(
+  const paginatedData = filteredData?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
 
-  const totalPages = Math.ceil(filteredData.length / pageSize);
+  const totalPages = Math.ceil(filteredData?.length / pageSize);
 
 
  useEffect(() => {
@@ -86,7 +98,8 @@ const handleRefresh = async () => {
   setCalendarOpen(false);
   setCurrentPage(0); 
   const response = await ListUser(Number(userId), "", "");
-  setPatientData(response.data);
+  setPatientData(response?.data?.data?.responseData);
+  setPatientCount(response?.data?.data?.patientReports);
 };
 
 
@@ -145,7 +158,6 @@ const handleRefresh = async () => {
               </Tooltip>
 
               <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
-                <h2 className="text-xl font-semibold">Dashboard Information</h2>
                 <HomeInformation />
               </Drawer>
             </div>
@@ -184,7 +196,7 @@ const handleRefresh = async () => {
               </tr>
             </thead>
             <tbody>
-              {paginatedData.map((patient, index) => (
+              {paginatedData.map((patient:any, index:any) => (
                 <tr
                   key={index}
                   className={`border-t transition-colors duration-200 cursor-pointer ${patient.highlighted

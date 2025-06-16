@@ -45,9 +45,10 @@ const SignUp = () => {
       };
       try {
         const response = await signUp(payload);
-        console.log("Sign Up Response:", response);
+        if(response?.data?.message){
         toast.success(`${response.data.message}`);
         router.push("/thankYou");
+        }
       } catch (error) {
         console.error("Sign Up Error:", error);
         const err = error as any;
@@ -111,7 +112,7 @@ const SignUp = () => {
   }, []);
 
   return (
-    <div className="w-full  h-[calc(100vh-112px)] flex flex-col items-center justify-center " style={{
+    <div className="w-full  h-[calc(100vh-80px)] sm:h-[calc(100vh-90px)]  md:h-[calc(100vh-100px)] lg:h-[calc(100vh-139px)] flex flex-col items-center justify-center " style={{
       background: 'linear-gradient(to bottom, white 70%, #67e8f9 100%)'
     }}>
       <div className="text-center">
@@ -154,7 +155,7 @@ const SignUp = () => {
                   value={formik.values.labName}
                 />
                 {formik.touched.labName && formik.errors.labName && (
-                  <p className="text-red-500 text-xs mt-1">
+                  <p className="text-red-500 text-xs ">
                     {formik.errors.labName}
                   </p>
                 )}
@@ -171,7 +172,7 @@ const SignUp = () => {
                   value={formik.values.labEmail}
                 />
                 {formik.touched.labEmail && formik.errors.labEmail && (
-                  <p className="text-red-500 text-xs mt-1">
+                  <p className="text-red-500 text-xs ">
                     {formik.errors.labEmail}
                   </p>
                 )}
@@ -188,7 +189,7 @@ const SignUp = () => {
                   value={formik.values.phone}
                 />
                 {formik.touched.phone && formik.errors.phone && (
-                  <p className="text-red-500 text-xs mt-1">
+                  <p className="text-red-500 text-xs ">
                     {formik.errors.phone}
                   </p>
                 )}
@@ -205,59 +206,64 @@ const SignUp = () => {
                   value={formik.values.pincode}
                 />
                 {formik.touched.pincode && formik.errors.pincode && (
-                  <p className="text-red-500 text-xs mt-1">
+                  <p className="text-red-500 text-xs ">
                     {formik.errors.pincode}
                   </p>
                 )}
               </div>
 
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  placeholder="Password"
-                  className="w-full border border-black rounded-md px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.password}
-                />
-                <span
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 cursor-pointer"
-                >
-                  <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
-                </span>
-                {formik.touched.password && formik.errors.password && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {formik.errors.password}
-                  </p>
-                )}
-              </div>
+             <div className="relative">
+  <input
+    type={showPassword ? "text" : "password"}
+    name="password"
+    placeholder="Password"
+    className="w-full border border-black rounded-md px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    onChange={formik.handleChange}
+    onBlur={formik.handleBlur}
+    value={formik.values.password}
+  />
+  <span
+    onClick={() => setShowPassword(!showPassword)}
+    className="absolute right-3 top-1/3 -translate-y-1/2 text-gray-500 cursor-pointer"
+  >
+    <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
+  </span>
+  <div className="min-h-[1.25rem] mt-1">
+    {formik.touched.password && formik.errors.password && (
+      <p className="text-red-500 text-xs">
+        {formik.errors.password}
+      </p>
+    )}
+  </div>
+</div>
 
 
-              <div className="relative">
-                <input
-                  type={showConfirm ? "text" : "password"}
-                  name="confirmPassword"
-                  placeholder="Confirm Password"
-                  className="w-full border border-black rounded-md px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.confirmPassword}
-                />
-                <span
-                  onClick={() => setShowConfirm(!showConfirm)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 cursor-pointer"
-                >
-                  <FontAwesomeIcon icon={showConfirm ? faEye : faEyeSlash} />
-                </span>
-                {formik.touched.confirmPassword &&
-                  formik.errors.confirmPassword && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {formik.errors.confirmPassword}
-                    </p>
-                  )}
-              </div>
+
+             <div className="relative">
+  <input
+    type={showConfirm ? "text" : "password"}
+    name="confirmPassword"
+    placeholder="Confirm Password"
+    className="w-full border border-black rounded-md px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    onChange={formik.handleChange}
+    onBlur={formik.handleBlur}
+    value={formik.values.confirmPassword}
+  />
+  <span
+    onClick={() => setShowConfirm(!showConfirm)}
+    className="absolute right-3 top-1/3 -translate-y-1/2 text-gray-500 cursor-pointer"
+  >
+    <FontAwesomeIcon icon={showConfirm ? faEye : faEyeSlash} />
+  </span>
+  <div className="min-h-[1.25rem] mt-1">
+    {formik.touched.confirmPassword && formik.errors.confirmPassword && (
+      <p className="text-red-500 text-xs">
+        {formik.errors.confirmPassword}
+      </p>
+    )}
+  </div>
+</div>
+
 
                   {!otpVisible &&
                     !isCaptchaVerified &&
@@ -344,7 +350,7 @@ const SignUp = () => {
 
               {formik.touched.otp && formik.errors.otp && (
                 <div className="md:col-span-2 text-center">
-                  <p className="text-red-500 text-xs mt-1">{formik.errors.otp}</p>
+                  <p className="text-red-500 text-xs ">{formik.errors.otp}</p>
                 </div>
               )}
 
@@ -359,20 +365,35 @@ const SignUp = () => {
                     checked={formik.values.acceptTerms}
                     className="w-4 h-4 accent-blue-600"
                   />
-                  <label htmlFor="acceptTerms" className="text-sm text-gray-700">
-                    I Accept The{" "}
-                    <a
-                      href="#"
-                      className="text-blue-800 font-semibold hover:underline"
-                    >
-                      Terms & Conditions
-                    </a>
-                  </label>
+          <div className="text-sm text-gray-700">
+  <label htmlFor="acceptTerms" className="mr-1">
+    I Accept The
+  </label>
+  <a
+    href="https://hfiles.in/Terms&Conditions"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-blue-800 font-semibold hover:underline"
+  >
+    Terms & Conditions
+  </a>{" "}
+  &{" "}
+  <a
+    href="https://hfiles.in/privacypolicy"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-blue-800 font-semibold hover:underline"
+  >
+    Privacy Policy
+  </a>
+</div>
+
+
                 </div>
               )}
               {formik.touched.acceptTerms && formik.errors.acceptTerms && (
                 <div className="md:col-span-2 text-center">
-                  <p className="text-red-500 text-xs mt-1">
+                  <p className="text-red-500 text-xs ">
                     {formik.errors.acceptTerms}
                   </p>
                 </div>

@@ -57,6 +57,10 @@ export const AddLabUserReport = async (data:FormData) => {
   return axiosInstance.post(`${endPoints.Lab_User_Reports.ADD_LAb_USER_REPORT}`, data);
 };
 
+export const ListAllReports = async () =>{
+  return axiosInstance.get(`${endPoints.Lab_User_Reports.ALL_REPORTS}`)
+}
+
 export const ListReport = async (userId:number, reportType:string) => {
   return axiosInstance.get(`${endPoints.Lab_User_Reports.Report_LAB_USERReport}/${userId}?reportType=${reportType}`);
 };
@@ -128,6 +132,14 @@ export const CreateBranch = async (data:any) => {
  return axiosInstance.post(`${endPoints.Lab_Profile.ADD_BRANCH}`, data)
 }
 
+export const UserOTPVerify = async (data:any) =>{
+  return axiosInstance.post(`${endPoints.Lab_Profile.VERIFY_OTP}`,data);
+}
+
+export const RevertBranch = async (data:any) =>{
+  return axiosInstance.patch(`${endPoints.Lab_Profile.REVERT_BRANCH}`,data);
+}
+
 export const DeleteBranch = async (branchId:number) => {
   return axiosInstance.delete(`${endPoints.Lab_Profile.DELETE_BRANCH}/${branchId}`);
 }
@@ -140,6 +152,10 @@ export const Pincode = async (pincode:string) => {
   return axiosInstance.get(`${endPoints.Lab_Profile.PINCODE}/${pincode}`);
 }
 
+export const DeleteBrnaches = async () =>{
+  return axiosInstance.get(`${endPoints.Lab_Profile.DELETED_BRANCH}`);
+}
+
 // All Members API
 export const AddMember = async (data:any) => {
   return axiosInstance.post(`${endPoints.All_Members.ADD_Memeber}`, data);
@@ -149,6 +165,21 @@ export const DeleteMember = async (id:number) => {
   return axiosInstance.delete(`${endPoints.All_Members.DELETE_MEMBER}/${id}`);
 }
 
+export const RemoveUserList = async (data: any) => {
+  return axiosInstance.delete(`${endPoints.All_Members.REMOVE_USER}`, {
+    data: data, 
+  });
+};
+
+
 export const CreateMemeber = async (data:any) => {
   return axiosInstance.post(`${endPoints.All_Members.Add_MEMBER_CREATE}`, data);
+}
+
+export const GetMemberList = async (labId: number) =>{
+return axiosInstance.get(`${endPoints.All_Members.GET_DELETE_MEMBER(labId)}`);
+}
+
+export const RevertUser = async (data:any) =>{
+  return axiosInstance.patch(`${endPoints.All_Members.REVERT_USER}`,data);
 }

@@ -116,8 +116,8 @@ const AddTeamMemberModal: React.FC<AddTeamMemberModalProps> = ({ isOpen, onClose
 
 
   const ListBranch = async () => {
-    const res = await ListBranchData();
-    setBranchList(res.data.data);
+    const response = await ListBranchData();
+    setBranchList(response.data.data.labs);
   }
 
 
@@ -184,7 +184,7 @@ const AddTeamMemberModal: React.FC<AddTeamMemberModalProps> = ({ isOpen, onClose
                   }`}
               >
                 <option value="">Select a branch they work from</option>
-                {branchList.map((branch: Branch) => (
+                {branchList?.map((branch: Branch) => (
                   <option key={branch.labId} value={branch.labId}>
                     {`${branch.location} - ${branch.pincode} - ${branch.hfid}`}
                   </option>

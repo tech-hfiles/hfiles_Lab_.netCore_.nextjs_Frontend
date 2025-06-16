@@ -26,6 +26,9 @@ import BranchData from "../tabsData/BranchData";
 import Page from "../labAllMember/page";
 import Drawer from "../components/Drawer";
 import Tooltip from './../components/Tooltip';
+import ProfileEditModal from "./component/ProfileEditModalProps";
+import BranchInformation from "../components/pageInfomations/BranchInformation";
+import MemberInformation from "../components/pageInfomations/MemberInformation";
 
 interface Admin {
   adminId: number;
@@ -62,6 +65,9 @@ const page = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [branchCount , setBranchCount] = useState()as any;
     const [userCount, setUserCount] = useState() as any;
+    const [selectedLab, setSelectedLab] = useState<any>(null);
+const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+
 
   // Formik & Yup schema
   const formik = useFormik({
@@ -122,7 +128,7 @@ const page = () => {
   }, [])
 
 
-  const BASE_URL = "https://localhost:7227/uploads/";
+  const BASE_URL = "https://d7cop3y0lcg80.cloudfront.netreports/";
 
   useEffect(() => {
     if (hasSwitched) {
@@ -252,8 +258,7 @@ const filteredData = activeTab === 'branches'
 
 
            <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
-                <h2 className="text-xl font-semibold">Dashboard Information</h2>
-                <h1>Profile</h1>
+               {activeTab === 'branches' ? <BranchInformation /> : <MemberInformation />}
               </Drawer>
         </div>
 
@@ -277,35 +282,25 @@ const filteredData = activeTab === 'branches'
                         uploadedFile
                           ? URL.createObjectURL(uploadedFile)
                           : lab.profilePhoto
-                            ? `${BASE_URL}${lab.profilePhoto}`
+                            ? `${lab.profilePhoto}`
                             : "/250bd3d11edb6cfc8add2600b5bb25c75b95d560.jpg"
                       }
                       alt={lab.labName}
                       className="w-32 h-32 sm:w-[224px] sm:h-[180px] rounded-full object-cover"
                     />
                     <div className="absolute bottom-2 right-4 p-2 bg-blue-900 w-[30px] h-[30px] rounded-full cursor-pointer"
-                      onClick={() => handleEditClick(lab.labId)}
-                    >
+                     onClick={() => {
+                        setSelectedLab(lab);
+                        setIsProfileModalOpen(true);
+                      }}
+
+                        >
                       <FontAwesomeIcon
                         icon={faPencil}
                         size="sm"
                         className="text-white mb-1"
                       />
                     </div>
-
-                    {isEditing && (
-                      <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-30 rounded-full flex items-center justify-center group-hover:flex">
-                        <label className="cursor-pointer text-white">
-                          <FontAwesomeIcon icon={faUpload} size="lg" />
-                          <input
-                            type="file"
-                            className="hidden"
-                            accept="image/*"
-                            onChange={handleFileChange}
-                          />
-                        </label>
-                      </div>
-                    )}
                   </div>
 
                   <div className="ml-6 mb-5 flex flex-col justify-between">
@@ -323,27 +318,24 @@ const filteredData = activeTab === 'branches'
                         <span className="font-semibold">Phone:</span> {lab.phoneNumber}
                       </p>
                       <p className="break-words">
-                        <span className="font-semibold">Address:</span>{" "}
-                        {isEditing ? (
-                          <input
-                            type="text"
-                            value={editedAddress}
-                            onChange={(e) => setEditedAddress(e.target.value)}
-                            className="border p-1 rounded w-full mt-1"
-                          />
-                        ) : (
-                          lab.address || "No address provided"
-                        )}
+                        <span className="font-semibold">Address:</span>{lab.address}
                       </p>
                     </div>
-                    {isEditing && (
-                      <button
-                        className="mt-3 bg-blue-700 hover:bg-blue-800 text-white px-4 py-1 rounded w-fit"
-                        onClick={() => handleSave(lab)}
-                      >
-                        Save
-                      </button>
-                    )}
+                    <ProfileEditModal
+                    isOpen={isProfileModalOpen}
+                    onClose={() => setIsProfileModalOpen(false)}
+                    lab={selectedLab}
+                    onSave={async (formData: FormData) => {
+                      try {
+                        const response = await UpdateProfile(formData);
+                        toast.success(`${response.data.message}`);
+                        await ListBranch();
+                      } catch (error) {
+                        console.error("Update failed:", error);
+                      }
+                    }}
+/>
+
                   </div>
                 </div>
               </div>
@@ -363,7 +355,6 @@ const filteredData = activeTab === 'branches'
           <BranchData
             setIsModalOpen={setIsModalOpen}
             filteredData={filteredData}
-            BASE_URL={BASE_URL}
             setHasSwitched={setHasSwitched}
             ListBranch={ListBranch}
             hasSwitched={hasSwitched}

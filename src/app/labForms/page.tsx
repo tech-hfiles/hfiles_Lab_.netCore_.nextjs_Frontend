@@ -10,6 +10,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
 import Tooltip from "../components/Tooltip";
 import Drawer from "../components/Drawer";
+import FormInformation from "../components/pageInfomations/FormInformation";
 
 
 interface FileWithReport {
@@ -234,8 +235,7 @@ const HTransferPage: React.FC = () => {
 
 
           <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
-            <h2 className="text-xl font-semibold">Dashboard Information</h2>
-            <h1>Profile</h1>
+            <FormInformation />
           </Drawer>
         </div>
 
@@ -380,7 +380,7 @@ const HTransferPage: React.FC = () => {
                 <div className="flex mt-3 md:mt-0">
                   <input
                     type="file"
-                    accept="image/*,application/pdf"
+                    accept="image/*,application/pdf,application/zip,application/x-zip-compressed"
                     multiple
                     ref={(el) => {
                       fileInputRefs.current[index] = el;

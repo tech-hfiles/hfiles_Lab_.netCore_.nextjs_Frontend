@@ -27,7 +27,8 @@ export const endPoints = {
          USERCARD: (labId: number) => `${API_Lab_Reports}labs/${labId}/users`,
         SEND_REPORT: API_Lab_Reports + "labs/reports/resend",
         NOTIFICATION: (labId:number) => `${API_Lab_Reports}labs/${labId}/notifications`,
-        SUPER_ADMIN_PROMOTE : API_Lab_Reports + "labs/admin/promote"
+        SUPER_ADMIN_PROMOTE : API_Lab_Reports + "labs/admin/promote",
+        ALL_REPORTS : API_Lab_Reports + "labs/reports/all"
     },
     Lab_Admin:{
         CREATE_ADMIN: API_Lab_Reports + "labs/super-admins",
@@ -38,11 +39,18 @@ export const endPoints = {
         ADD_BRANCH : API_Lab_Reports + "labs/branches",
         DELETE_BRANCH : API_Lab_Reports + "labs/branches",
         PROFILE_UPDATE : API_Lab_Reports + "labs/update",
-        PINCODE : API_Lab_Reports + "labs/branches"
+        PINCODE : API_Lab_Reports + "labs/branches",
+        DELETED_BRANCH : API_Lab_Reports + "labs/deleted-branches",
+        REVERT_BRANCH : API_Lab_Reports + "labs/revert-branch",
+        VERIFY_OTP : API_Lab_Reports + "labs/password-reset/verify/otp",
+        
     },
     All_Members: {
         ADD_Memeber: API_Lab_Reports + "labs/members/promote",
         DELETE_MEMBER : API_Lab_Reports + "labs/members",
-        Add_MEMBER_CREATE: API_Lab_Reports +"labs/members"
+        Add_MEMBER_CREATE: API_Lab_Reports +"labs/members",
+        GET_DELETE_MEMBER: (labId:number) => `${API_Lab_Reports}labs/${labId}/deleted-users`,
+        REMOVE_USER : API_Lab_Reports + "labs/remove-user",
+        REVERT_USER : API_Lab_Reports + "labs/revert-user",
     }
 };

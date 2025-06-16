@@ -5,6 +5,7 @@ import { CreateBranch, LoginOTP, otpGenerate, Pincode, BranchOTP } from "@/servi
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import GenericConfirmModal from '../components/GenericConfirmModal';
 
 interface BranchDataProps {
   setIsModalOpen: (open: boolean) => void;
@@ -36,6 +37,9 @@ const BranchData: React.FC<BranchDataProps> = ({
   const [isPincodeLoading, setIsPincodeLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+const [isModalOpens, setIsModalOpens] = useState(false);
+const [selectedLabId, setSelectedLabId] = useState<string | null>(null);
+
 
   // OTP Formik setup
   const otpFormik = useFormik({
@@ -59,7 +63,7 @@ const BranchData: React.FC<BranchDataProps> = ({
         setIsOtpVerified(true);
       } catch (error) {
         const err = error as any;
-        toast.error(`${err.response?.data?.message}`);
+        toast.error(`${err.response?.data?.Message}`);
         console.error("OTP verification failed:", error);
         setIsOtpVerified(false);
       } finally {
@@ -70,7 +74,6 @@ const BranchData: React.FC<BranchDataProps> = ({
 
   // Handle OTP generation
   const handleGetOtp = async () => {
-    // Validate only the required fields for OTP generation
     const errors = await formik.validateForm();
     formik.setTouched({
       labName: true,
@@ -78,7 +81,6 @@ const BranchData: React.FC<BranchDataProps> = ({
       phoneNumber: true,
     });
 
-    // Check if there are validation errors for the required fields
     const requiredFieldsValid = !errors.labName && !errors.email && !errors.phoneNumber;
 
     if (requiredFieldsValid && formik.values.labName && formik.values.email && formik.values.phoneNumber) {
@@ -90,12 +92,12 @@ const BranchData: React.FC<BranchDataProps> = ({
           phoneNumber: formik.values.phoneNumber,
         });
         setOtpVisible(true);
-        setIsOtpVerified(false); // Reset OTP verification status
+        setIsOtpVerified(false); 
         toast.success(`${response.data.message}`);
       } catch (error) {
         console.error("OTP Error:", error);
         const err = error as any;
-        toast.error(`${err.response?.data?.message}`);
+        toast.error(`${err.response?.data?.Message}`);
       } finally {
         setIsOtpSending(false);
       }
@@ -125,12 +127,10 @@ const BranchData: React.FC<BranchDataProps> = ({
     }
   };
 
-  // Effect to update OTP email when main form email changes
   useEffect(() => {
     otpFormik.setFieldValue("email", formik.values.email);
   }, [formik.values.email]);
 
-  // Reset states when modal closes
   useEffect(() => {
     if (!isModalOpen) {
       setOtpVisible(false);
@@ -217,7 +217,7 @@ const BranchData: React.FC<BranchDataProps> = ({
           </div>
 
           {/* Remove Branch button appears on hover */}
-          <div className="absolute -bottom-0 left-1/2 transform -translate-x-1/2 hidden group-hover:flex">
+          {/* <div className="absolute -bottom-0 left-1/2 transform -translate-x-1/2 hidden group-hover:flex">
             <button
               type="button"
               onClick={() => handleRemoveBranch(String(branch.labId))}
@@ -226,9 +226,39 @@ const BranchData: React.FC<BranchDataProps> = ({
               Remove Branch
               <FontAwesomeIcon icon={faCircleMinus} />
             </button>
-          </div>
+          </div> */}
+           <div className="absolute -bottom-0 left-1/2 transform -translate-x-1/2 hidden group-hover:flex">
+          <button
+  type="button"
+  onClick={() => {
+    setSelectedLabId(String(branch.labId));
+    setIsModalOpens(true);
+  }}
+  className="text-red-500 text-sm font-medium hover:text-red-700 hover:underline flex items-center gap-1 cursor-pointer"
+>
+  Remove Branch
+  <FontAwesomeIcon icon={faCircleMinus} />
+</button>
+</div>
         </div>
       ))}
+
+      <GenericConfirmModal
+  isOpen={isModalOpens}
+  onClose={() => setIsModalOpens(false)}
+  imageSrc="/Vector (1).png"
+  title="Remove Branch?"
+  message="Are you sure you want to remove this branch? This action cannot be undone."
+  dynamicName={selectedLabId ?? ""}
+  type="warning"
+  onConfirm={() => {
+    if (selectedLabId) {
+      handleRemoveBranch(selectedLabId);
+    }
+    setIsModalOpens(false);
+  }}
+/>
+
 
       {/* Modal */}
       {isModalOpen && (
