@@ -13,7 +13,7 @@ import DefaultLayout from "../components/DefaultLayout";
 import DatePicker from "react-datepicker";
 import CustomDatePicker from "../components/Datepicker/CustomDatePicker";
 import { useRouter } from "next/navigation";
-import { ListUser ,ListAllReports } from "@/services/labServiceApi";
+import { ListUser, ListAllReports } from "@/services/labServiceApi";
 import { number } from "yup";
 import Tooltip from "../components/Tooltip";
 import Drawer from "../components/Drawer";
@@ -27,7 +27,7 @@ type Patient = {
   date: string;
   viewType: string;
   highlighted?: boolean;
-  userId:string;
+  userId: string;
 };
 
 const page = () => {
@@ -42,30 +42,37 @@ const page = () => {
   const pageSize = 20;
   const [formattedStart, setFormattedStart] = useState("");
   const [formattedEnd, setFormattedEnd] = useState("");
-    const userId = localStorage.getItem("userId");
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [patientCount , setPatientCount] = useState() as any;
-    const [allReport,setAllReports ] = useState() as any;
+  const userId = localStorage.getItem("userId");
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [patientCount, setPatientCount] = useState() as any;
+  const [allReport, setAllReports] = useState() as any;
+//   const [userId, setUserId] = useState<string | null>(null);
+
+//   useEffect(() => {
+//   const storedUserId = localStorage.getItem("userId");
+//   setUserId(storedUserId);
+// }, []);
+
 
 
   const userList = async () => {
-    const response = await ListUser(Number(userId!),formattedStart, formattedEnd);
+    const response = await ListUser(Number(userId!), formattedStart, formattedEnd);
     setPatientData(response?.data?.data?.responseData)
     setPatientCount(response?.data?.data?.patientReports)
 
   }
 
-useEffect(() => {
-  const fetchReportsIfSearching = async () => {
+  useEffect(() => {
+    const fetchReportsIfSearching = async () => {
       const response = await ListAllReports();
       setAllReports(response?.data?.data || []);
-  };
-  fetchReportsIfSearching();
-}, []);
+    };
+    fetchReportsIfSearching();
+  }, []);
 
 
   // const filteredData = patientData?.filter((patient) =>
-  const filteredData = (searchQuery.trim() !== "" ? allReport : patientData)?.filter((patient:any) =>
+  const filteredData = (searchQuery.trim() !== "" ? allReport : patientData)?.filter((patient: any) =>
     patient.hfid.toLowerCase().includes(searchQuery.toLowerCase()) ||
     patient.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -78,29 +85,29 @@ useEffect(() => {
   const totalPages = Math.ceil(filteredData?.length / pageSize);
 
 
- useEffect(() => {
-  userList();
-}, [userId,formattedStart, formattedEnd]);
+  useEffect(() => {
+    userList();
+  }, [userId, formattedStart, formattedEnd]);
 
 
   const handleDateRangeSelect = (start: Date, end: Date) => {
-  const startStr = start.toLocaleDateString("en-GB");
-  const endStr = end.toLocaleDateString("en-GB");
-  setFormattedStart(startStr);
-  setFormattedEnd(endStr);
-  setCalendarOpen(false)
-};
+    const startStr = start.toLocaleDateString("en-GB");
+    const endStr = end.toLocaleDateString("en-GB");
+    setFormattedStart(startStr);
+    setFormattedEnd(endStr);
+    setCalendarOpen(false)
+  };
 
-const handleRefresh = async () => {
-  setFormattedStart("");
-  setFormattedEnd("");
-  setSelectedDate(null);
-  setCalendarOpen(false);
-  setCurrentPage(0); 
-  const response = await ListUser(Number(userId), "", "");
-  setPatientData(response?.data?.data?.responseData);
-  setPatientCount(response?.data?.data?.patientReports);
-};
+  const handleRefresh = async () => {
+    setFormattedStart("");
+    setFormattedEnd("");
+    setSelectedDate(null);
+    setCalendarOpen(false);
+    setCurrentPage(0);
+    const response = await ListUser(Number(userId), "", "");
+    setPatientData(response?.data?.data?.responseData);
+    setPatientCount(response?.data?.data?.patientReports);
+  };
 
 
   return (
@@ -139,7 +146,7 @@ const handleRefresh = async () => {
 
         {/* Table */}
         <div className="overflow-x-auto w-full rounded-2xl border border-black min-h-[60vh]">
-         <div className="flex justify-between items-center mx-7 mt-2 mb-3">
+          <div className="flex justify-between items-center mx-7 mt-2 mb-3">
             <p className="text-gray-700 text-sm">
               All the individuals you've supported by sending timely and accurate health reports are listed here.
             </p>
@@ -154,7 +161,7 @@ const handleRefresh = async () => {
               </Tooltip>
 
               <Tooltip content="Information about this page" position="bottom right-2">
-                <FontAwesomeIcon icon={faInfoCircle} size="lg" className="text-gray-600 cursor-pointer"  onClick={() => setIsDrawerOpen(true)} />
+                <FontAwesomeIcon icon={faInfoCircle} size="lg" className="text-gray-600 cursor-pointer" onClick={() => setIsDrawerOpen(true)} />
               </Tooltip>
 
               <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
@@ -183,7 +190,7 @@ const handleRefresh = async () => {
                     ref={dateRef}
                   >
                     Date
-                     <FontAwesomeIcon icon={faChevronDown} className="ml-2" />
+                    <FontAwesomeIcon icon={faChevronDown} className="ml-2" />
                   </div>
                   <div className="absolute z-10 mt-2 bg-white border rounded shadow">
                     {calendarOpen && (
@@ -196,7 +203,7 @@ const handleRefresh = async () => {
               </tr>
             </thead>
             <tbody>
-              {paginatedData.map((patient:any, index:any) => (
+              {paginatedData.map((patient: any, index: any) => (
                 <tr
                   key={index}
                   className={`border-t transition-colors duration-200 cursor-pointer ${patient.highlighted
@@ -209,7 +216,7 @@ const handleRefresh = async () => {
                     <Tooltip content={patient.name} position="bottom">
                       <span className="block truncate max-w-[150px]">{patient.name}</span>
                     </Tooltip>
-                    </td>
+                  </td>
                   <td className="p-3  text-blue-700 font-medium">
                     {patient.reportType}
                   </td>

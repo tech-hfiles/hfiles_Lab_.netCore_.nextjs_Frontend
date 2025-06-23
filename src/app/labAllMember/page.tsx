@@ -1,6 +1,5 @@
 'use client';
-import React, { useEffect, useState } from "react";
-import DefaultLayout from '../components/DefaultLayout';
+import React, { useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleMinus, faUserPlus, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { AddMember, DeleteMember, PromoteSuperAdmin } from "@/services/labServiceApi";
@@ -41,20 +40,7 @@ const Page: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
       selectedMembers: Yup.array()
         .min(1, 'Please Select a Member to Assign Admin Access.'),
     }),
-    // onSubmit: async (values) => {
-    //   const payload = {
-    //     ids: values.selectedMembers,
-    //   };
-    //   try {
-    //     const response = await AddMember(payload);
-    //     toast.success(`${response.data.message}`)
-    //     await CardList();
-    //     formik.resetForm();
-    //     setShowCheckboxes(false);
-    //   } catch (error) {
-    //     console.error("AddMember API error:", error);
-    //   }
-    // },
+
     onSubmit: async (values) => {
       try {
         if (submitType === 'admin') {
@@ -237,7 +223,7 @@ const Page: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
                         setSelectedMemberId(null);
                       }}
                       imageSrc="/Vector (1).png"
-                      title="Remove Admin?"
+                      title="Remove Admin"
                       message="They will lose access to the system. You can retrieve it from the system at any time."
                       type="warning"
                       onConfirm={() => {

@@ -3,22 +3,13 @@ import React, { useEffect, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faArrowRightArrowLeft,
-  faBuilding,
-  faCircleMinus,
-  faEnvelope,
-  faLocationDot,
   faPencil,
   faSearch,
-  faTimes,
-  faUserPlus,
-  faUpload,
   faInfoCircle
 } from "@fortawesome/free-solid-svg-icons";
 
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { faPhone } from "@fortawesome/free-solid-svg-icons/faPhone";
 import { useRouter } from "next/navigation";
 import { ListBranchData, CreateBranch, DeleteBranch, UpdateProfile, UserCardList } from "@/services/labServiceApi";
 import { toast, ToastContainer } from "react-toastify";
@@ -54,7 +45,7 @@ const page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [branchList, setBranchList] = useState([]) as any;
   const [hasSwitched, setHasSwitched] = useState(false);
-  const userId = localStorage.getItem("userId");
+  // const userId = localStorage.getItem("userId");
   const [isEditing, setIsEditing] = useState(false);
   const [editedAddress, setEditedAddress] = useState("");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -67,7 +58,13 @@ const page = () => {
     const [userCount, setUserCount] = useState() as any;
     const [selectedLab, setSelectedLab] = useState<any>(null);
 const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+const [userId, setUserId] = useState<string | null>(null);
 
+
+useEffect(() => {
+  const storedUserId = localStorage.getItem("userId");
+  setUserId(storedUserId);
+}, []);
 
   // Formik & Yup schema
   const formik = useFormik({
@@ -322,19 +319,18 @@ const filteredData = activeTab === 'branches'
                       </p>
                     </div>
                     <ProfileEditModal
-                    isOpen={isProfileModalOpen}
-                    onClose={() => setIsProfileModalOpen(false)}
-                    lab={selectedLab}
-                    onSave={async (formData: FormData) => {
-                      try {
-                        const response = await UpdateProfile(formData);
-                        toast.success(`${response.data.message}`);
-                        await ListBranch();
-                      } catch (error) {
-                        console.error("Update failed:", error);
-                      }
-                    }}
-/>
+                      isOpen={isProfileModalOpen}
+                      onClose={() => setIsProfileModalOpen(false)}
+                      lab={selectedLab}
+                      onSave={async (formData: FormData) => {
+                        try {
+                          const response = await UpdateProfile(formData);
+                          toast.success(`${response.data.message}`);
+                          await ListBranch();
+                        } catch (error) {
+                          console.error("Update failed:", error);
+                        }
+                      } } BASE_URL={""}/>
 
                   </div>
                 </div>
@@ -360,8 +356,7 @@ const filteredData = activeTab === 'branches'
             hasSwitched={hasSwitched}
             handleRemoveBranch={handleRemoveBranch}
             isModalOpen={isModalOpen}
-            formik={formik}
-          />
+            formik={formik} BASE_URL={""}          />
         )}
 
         {activeTab === 'members' && <Page  filteredData={filteredData} CardList={CardList} adminsList={adminsList}/>}

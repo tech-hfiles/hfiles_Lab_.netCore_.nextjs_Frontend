@@ -113,7 +113,7 @@ const [selectedLabId, setSelectedLabId] = useState<string | null>(null);
         setIsPincodeLoading(true);
         const response = await Pincode(pincode);
         setPincodeData(
-          `${response.data.location}-${pincode}`
+          `${response.data.data.location}-${pincode}`
         );
       } catch (error) {
         console.error("Pincode fetch error:", error);

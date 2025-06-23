@@ -353,7 +353,7 @@ const AdminPanel = () => {
                                 setSelectedBranchId(null);
                               }}
                               imageSrc="/Vector.png"
-                              title="Restore Branch?"
+                              title="Restore Branch"
                               message="The selected branch was removed earlier. Confirm to reactivate it in the system"
                               type="warning"
                               onConfirm={async () => {

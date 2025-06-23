@@ -141,7 +141,7 @@ export const RevertBranch = async (data:any) =>{
 }
 
 export const DeleteBranch = async (branchId:number) => {
-  return axiosInstance.delete(`${endPoints.Lab_Profile.DELETE_BRANCH}/${branchId}`);
+  return axiosInstance.put(`${endPoints.Lab_Profile.DELETE_BRANCH}/${branchId}`);
 }
 
 export const UpdateProfile = async (formData: FormData) =>{
@@ -162,7 +162,7 @@ export const AddMember = async (data:any) => {
 }
 
 export const DeleteMember = async (id:number) => {
-  return axiosInstance.delete(`${endPoints.All_Members.DELETE_MEMBER}/${id}`);
+  return axiosInstance.put(`${endPoints.All_Members.DELETE_MEMBER}/${id}`);
 }
 
 export const RemoveUserList = async (data: any) => {
