@@ -1,5 +1,5 @@
 'use client';
-import { faBell,  faCalendarAlt, faLessThan } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faCalendarAlt, faLessThan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState, useRef, useEffect } from 'react';
 import LabHistoryTabs from './LabHistoryTabs';
@@ -13,6 +13,7 @@ import { LogOut, RotateCcw } from 'lucide-react';
 
 const LabHeader = () => {
   const username = localStorage.getItem("username")
+   const Role = localStorage.getItem("role");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showDrawer, setShowDrawer] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -24,7 +25,7 @@ const LabHeader = () => {
   const [activeTab, setActiveTab] = useState<'today' | 'week' | 'all'>('today');
   const prevNotificationIds = useRef<Set<number>>(new Set());
   const router = useRouter();
-    const [dropdownAnimating, setDropdownAnimating] = useState(false);
+  const [dropdownAnimating, setDropdownAnimating] = useState(false);
 
 
   // Close dropdown when clicking outside
@@ -39,7 +40,7 @@ const LabHeader = () => {
   }, []);
 
   const handleLogout = () => {
-        setDropdownAnimating(true);
+    setDropdownAnimating(true);
     window.location.href = '/labLogin';
     localStorage.removeItem("authToken");
     localStorage.removeItem("userId");
@@ -47,69 +48,70 @@ const LabHeader = () => {
     localStorage.removeItem("username");
     localStorage.removeItem("LabAdminId");
     localStorage.removeItem("switch");
+    localStorage.removeItem("role");
   };
 
 
   const handleRevert = () => {
-        setDropdownAnimating(true);
-  router.push("/revertMember&Branch"); 
-};
+    setDropdownAnimating(true);
+    router.push("/revertMember&Branch");
+  };
 
 
   const toggleDrawer = () => {
     setShowDrawer(!showDrawer);
   };
 
- 
-
-   const getTabId = (tab: string): number => {
-  switch (tab) {
-    case 'today':
-      return 1;
-    case 'week':
-      return 2;
-    case 'all':
-      return 3;
-    default:
-      throw new Error(`Invalid tab type: ${tab}`);
-  }
-};
 
 
-
-type Notification = { id: number; /* you can add more fields if needed */ };
-
-const NotificationData = async () => {
-  const id = getTabId(activeTab);
-  try {
-    const response = await ListNotification(Number(userId), id, formattedStart, formattedEnd);
-    const newNotifications: Notification[] = response.data.data;
-
-    const newCount = newNotifications.length;
-    const prevCountStr = localStorage.getItem("notificationCount");
-    const prevCount = prevCountStr ? parseInt(prevCountStr) : 0;
-
-    if (newCount !== prevCount) {
-      const newIds = new Set<number>(newNotifications.map((n) => n.id));
-      const addedNotifications = [...newIds].filter((id) => !prevNotificationIds.current.has(id));
-
-      if (addedNotifications.length > 0) {
-        toast.success(`${addedNotifications.length} new notification${addedNotifications.length > 1 ? 's' : ''} received`);
-      }
-
-      // Update localStorage and previous ref
-      localStorage.setItem("notificationCount", newCount.toString());
-      prevNotificationIds.current = newIds;
-      setNotifyList(newNotifications);
-    } else {
-      // Only update state without showing toast
-      prevNotificationIds.current = new Set<number>(newNotifications.map((n) => n.id));
-      setNotifyList(newNotifications);
+  const getTabId = (tab: string): number => {
+    switch (tab) {
+      case 'today':
+        return 1;
+      case 'week':
+        return 2;
+      case 'all':
+        return 3;
+      default:
+        throw new Error(`Invalid tab type: ${tab}`);
     }
-  } catch (err) {
-    console.error("Failed to fetch notifications", err);
-  }
-};
+  };
+
+
+
+  type Notification = { id: number; /* you can add more fields if needed */ };
+
+  const NotificationData = async () => {
+    const id = getTabId(activeTab);
+    try {
+      const response = await ListNotification(Number(userId), id, formattedStart, formattedEnd);
+      const newNotifications: Notification[] = response.data.data;
+
+      const newCount = newNotifications.length;
+      const prevCountStr = localStorage.getItem("notificationCount");
+      const prevCount = prevCountStr ? parseInt(prevCountStr) : 0;
+
+      if (newCount !== prevCount) {
+        const newIds = new Set<number>(newNotifications.map((n) => n.id));
+        const addedNotifications = [...newIds].filter((id) => !prevNotificationIds.current.has(id));
+
+        if (addedNotifications.length > 0) {
+          toast.success(`${addedNotifications.length} new notification${addedNotifications.length > 1 ? 's' : ''} received`);
+        }
+
+        // Update localStorage and previous ref
+        localStorage.setItem("notificationCount", newCount.toString());
+        prevNotificationIds.current = newIds;
+        setNotifyList(newNotifications);
+      } else {
+        // Only update state without showing toast
+        prevNotificationIds.current = new Set<number>(newNotifications.map((n) => n.id));
+        setNotifyList(newNotifications);
+      }
+    } catch (err) {
+      console.error("Failed to fetch notifications", err);
+    }
+  };
 
 
 
@@ -123,28 +125,28 @@ const NotificationData = async () => {
     setShowDatePicker((prev) => !prev);
   };
 
-    const handleDateRangeSelect = (start: Date, end: Date) => {
-  const startStr = start.toLocaleDateString("en-GB");
-  const endStr = end.toLocaleDateString("en-GB");
-  setFormattedStart(startStr);
-  setFormattedEnd(endStr);
-  setShowDatePicker(false)
-};
+  const handleDateRangeSelect = (start: Date, end: Date) => {
+    const startStr = start.toLocaleDateString("en-GB");
+    const endStr = end.toLocaleDateString("en-GB");
+    setFormattedStart(startStr);
+    setFormattedEnd(endStr);
+    setShowDatePicker(false)
+  };
 
-const formatElapsedTime = (minutes: number): string => {
-  if (!minutes || minutes <= 0) return "just now";
+  const formatElapsedTime = (minutes: number): string => {
+    if (!minutes || minutes <= 0) return "just now";
 
-  const months = Math.floor(minutes / (60 * 24 * 30));
-  const days = Math.floor((minutes % (60 * 24 * 30)) / (60 * 24));
-  const hours = Math.floor((minutes % (60 * 24)) / 60);
-  const mins = minutes % 60;
+    const months = Math.floor(minutes / (60 * 24 * 30));
+    const days = Math.floor((minutes % (60 * 24 * 30)) / (60 * 24));
+    const hours = Math.floor((minutes % (60 * 24)) / 60);
+    const mins = minutes % 60;
 
-  if (months > 0) return `${months}mo ago`;
-  if (days > 0) return `${days}d ago`;
-  if (hours > 0 && mins > 0) return `${hours}h ${mins}m ago`;
-  if (hours > 0) return `${hours}h ago`;
-  return `${mins}m ago`;
-};
+    if (months > 0) return `${months}mo ago`;
+    if (days > 0) return `${days}d ago`;
+    if (hours > 0 && mins > 0) return `${hours}h ${mins}m ago`;
+    if (hours > 0) return `${hours}h ago`;
+    return `${mins}m ago`;
+  };
 
 
 
@@ -163,20 +165,20 @@ const formatElapsedTime = (minutes: number): string => {
         </div>
         <div className="relative flex items-center space-x-3" ref={dropdownRef}>
           <div className="relative">
-              {/* Bell Icon */}
-              <FontAwesomeIcon
-                icon={faBell}
-                className="text-white text-xl cursor-pointer"
-                onClick={toggleDrawer}
-              />
+            {/* Bell Icon */}
+            <FontAwesomeIcon
+              icon={faBell}
+              className="text-white text-xl cursor-pointer"
+              onClick={toggleDrawer}
+            />
 
-              {/* Notification Count Badge */}
-              {notifyList?.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-bounce">
-                  {notifyList.length}
-                </span>
-              )}
-            </div>
+            {/* Notification Count Badge */}
+            {notifyList?.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-bounce">
+                {notifyList.length}
+              </span>
+            )}
+          </div>
 
           <p className="text-white font-medium">{username}</p>
           <img
@@ -185,31 +187,32 @@ const formatElapsedTime = (minutes: number): string => {
             className="h-10 w-10 rounded-full border-2 border-yellow-400 cursor-pointer"
             onClick={() => setDropdownOpen(!dropdownOpen)}
           />
-        {dropdownOpen && (
-  <div
-    className={`absolute right-0 top-3 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50 transition-all duration-200 ${
-      dropdownAnimating ? 'opacity-0 translate-y-1' : 'opacity-100 translate-y-0'
-    }`}
-  >
-    <button
-      onClick={handleRevert}
-      className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150 cursor-pointer"
-    >
-      <RotateCcw size={14} className="mr-3 text-gray-500" />
-      Restore 
-    </button>
+          {dropdownOpen && (
+            <div
+              className={`absolute right-0 top-3 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50 transition-all duration-200 ${dropdownAnimating ? 'opacity-0 translate-y-1' : 'opacity-100 translate-y-0'
+                }`}
+            >
+              {Role !== "Member" && 
+              <button
+                onClick={handleRevert}
+                className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150 cursor-pointer"
+              >
+                <RotateCcw size={14} className="mr-3 text-gray-500" />
+                Restore
+              </button>
+              }
 
-    <hr className="my-1 border-gray-100" />
+              <hr className="my-1 border-gray-100" />
 
-    <button
-      onClick={handleLogout}
-      className="w-full flex items-center px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150 cursor-pointer"
-    >
-      <LogOut size={14} className="mr-3" />
-      Sign Out
-    </button>
-  </div>
-)}
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150 cursor-pointer"
+              >
+                <LogOut size={14} className="mr-3" />
+                Sign Out
+              </button>
+            </div>
+          )}
 
         </div>
       </header>
@@ -243,24 +246,24 @@ const formatElapsedTime = (minutes: number): string => {
             onClick={toggleDatePicker}
           />
 
-           {showDatePicker && (
-              <div className="absolute top-16 right-4 z-50">
-                <CustomDatePicker onDateRangeSelect={handleDateRangeSelect} />
-              </div>
-            )}
+          {showDatePicker && (
+            <div className="absolute top-16 right-4 z-50">
+              <CustomDatePicker onDateRangeSelect={handleDateRangeSelect} />
+            </div>
+          )}
         </div>
 
         <div className="p-2 space-y-3 overflow-y-auto h-screen pb-7">
 
           <div>
-            <LabHistoryTabs activeTab={activeTab} setActiveTab={setActiveTab}/>
+            <LabHistoryTabs activeTab={activeTab} setActiveTab={setActiveTab} />
           </div>
           {/* Notification 1 */}
           <div className="space-y-3">
-            {notifyList?.map((item:any, index:any) => (
-              <div  
-               key={`${item.reportType}-${index}`}
-              className="border border-gray-300 p-3 rounded-lg flex items-start space-x-4 bg-white shadow-sm">
+            {notifyList?.map((item: any, index: any) => (
+              <div
+                key={`${item.reportType}-${index}`}
+                className="border border-gray-300 p-3 rounded-lg flex items-start space-x-4 bg-white shadow-sm">
                 {/* Icon */}
                 <div className="flex-shrink-0">
                   <img
@@ -274,11 +277,10 @@ const formatElapsedTime = (minutes: number): string => {
                 <div className="flex-1">
                   <div className="flex justify-between items-start">
                     <p className={`font-bold text-sm ${item.isImportant ? 'text-blue-700' : 'text-gray-800'}`}>
-                      {item.reportType}
+                      {item.notifications}
                     </p>
-                      <p className="text-xs text-gray-500">{formatElapsedTime(item.elapsedMinutes)}</p>
+                    <p className="text-xs text-gray-500">{formatElapsedTime(item.elapsedMinutes)}</p>
                   </div>
-                  <p className="text-sm text-gray-600">Sent to :{item.sentTo} , Send By :{item.sentBy}</p>
                 </div>
               </div>
             ))}

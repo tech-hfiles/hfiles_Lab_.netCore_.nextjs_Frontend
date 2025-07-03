@@ -6,27 +6,27 @@ import React from "react";
 const Footer = () => {
   return (
     <footer className="w-full text-white px-4 py-3 bg-[#0331B5]">
-      <div className="max-w-screen-xl mx-auto flex flex-col sm:flex-row sm:justify-between items-center text-center sm:text-left gap-3">
+      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:justify-between items-center text-center sm:text-left gap-3">
         {/* Legal Section */}
         <div className="flex flex-wrap justify-center sm:justify-start items-center space-x-2">
-  <a
-    href="https://hfiles.in/Terms&Conditions"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="hover:underline text-sm text-white font-medium"
-  >
-    Terms & Conditions
-  </a>
-  <span className="mx-1">|</span>
-  <a
-    href="https://hfiles.in/privacypolicy"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="hover:underline text-sm text-white font-medium"
-  >
-    Privacy Policy
-  </a>
-</div>
+          <a
+            href="https://hfiles.in/Terms&Conditions"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:underline text-sm text-white font-medium"
+          >
+            Terms & Conditions
+          </a>
+          <span className="mx-1">|</span>
+          <a
+            href="https://hfiles.in/privacypolicy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:underline text-sm text-white font-medium"
+          >
+            Privacy Policy
+          </a>
+        </div>
 
 
         {/* Info Section */}

@@ -258,6 +258,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const AdminCreates = () => {
+  
   const router = useRouter();
   const userId = localStorage.getItem("userId");
   const email = localStorage.getItem("emailId");
@@ -346,7 +347,7 @@ const AdminCreates = () => {
       );
       const data = JSON.parse(jsonPayload);
       localStorage.setItem("LabAdminId", data.LabAdminId);
-
+      localStorage.setItem("role", data.role);
     } catch (error) {
       console.error("Failed to decode JWT token:", error);
     }

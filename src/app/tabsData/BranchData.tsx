@@ -37,8 +37,9 @@ const BranchData: React.FC<BranchDataProps> = ({
   const [isPincodeLoading, setIsPincodeLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
-const [isModalOpens, setIsModalOpens] = useState(false);
-const [selectedLabId, setSelectedLabId] = useState<string | null>(null);
+  const [isModalOpens, setIsModalOpens] = useState(false);
+  const [selectedLabId, setSelectedLabId] = useState<string | null>(null);
+  const Role = localStorage.getItem("role");
 
 
   // OTP Formik setup
@@ -92,7 +93,7 @@ const [selectedLabId, setSelectedLabId] = useState<string | null>(null);
           phoneNumber: formik.values.phoneNumber,
         });
         setOtpVisible(true);
-        setIsOtpVerified(false); 
+        setIsOtpVerified(false);
         toast.success(`${response.data.message}`);
       } catch (error) {
         console.error("OTP Error:", error);
@@ -151,13 +152,15 @@ const [selectedLabId, setSelectedLabId] = useState<string | null>(null);
           <div className="border-b-2 border-gray-400 w-30 "></div>
         </div>
         <div className="w-full sm:w-auto">
-          <button
-            className="bg-yellow-300 hover:bg-yellow-400 px-4 py-2 rounded flex items-center gap-2 border w-full sm:w-auto justify-center cursor-pointer"
-            onClick={() => setIsModalOpen(true)}
-          >
-            <FontAwesomeIcon icon={faUserPlus} size="sm" />
-            <span>Add Branch</span>
-          </button>
+          {Role !== "Member" &&
+            <button
+              className="bg-yellow-300 hover:bg-yellow-400 px-4 py-2 rounded flex items-center gap-2 border w-full sm:w-auto justify-center cursor-pointer"
+              onClick={() => setIsModalOpen(true)}
+            >
+              <FontAwesomeIcon icon={faUserPlus} size="sm" />
+              <span>Add Branch</span>
+            </button>
+          }
         </div>
       </div>
 
@@ -227,37 +230,39 @@ const [selectedLabId, setSelectedLabId] = useState<string | null>(null);
               <FontAwesomeIcon icon={faCircleMinus} />
             </button>
           </div> */}
-           <div className="absolute -bottom-0 left-1/2 transform -translate-x-1/2 hidden group-hover:flex">
-          <button
-  type="button"
-  onClick={() => {
-    setSelectedLabId(String(branch.labId));
-    setIsModalOpens(true);
-  }}
-  className="text-red-500 text-sm font-medium hover:text-red-700 hover:underline flex items-center gap-1 cursor-pointer"
->
-  Remove Branch
-  <FontAwesomeIcon icon={faCircleMinus} />
-</button>
-</div>
+          <div className="absolute -bottom-0 left-1/2 transform -translate-x-1/2 hidden group-hover:flex">
+            {Role !== "Member" &&
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedLabId(String(branch.labId));
+                  setIsModalOpens(true);
+                }}
+                className="text-red-500 text-sm font-medium hover:text-red-700 hover:underline flex items-center gap-1 cursor-pointer"
+              >
+                Remove Branch
+                <FontAwesomeIcon icon={faCircleMinus} />
+              </button>
+            }
+          </div>
         </div>
       ))}
 
       <GenericConfirmModal
-  isOpen={isModalOpens}
-  onClose={() => setIsModalOpens(false)}
-  imageSrc="/Vector (1).png"
-  title="Remove Branch?"
-  message="Are you sure you want to remove this branch? This action cannot be undone."
-  dynamicName={selectedLabId ?? ""}
-  type="warning"
-  onConfirm={() => {
-    if (selectedLabId) {
-      handleRemoveBranch(selectedLabId);
-    }
-    setIsModalOpens(false);
-  }}
-/>
+        isOpen={isModalOpens}
+        onClose={() => setIsModalOpens(false)}
+        imageSrc="/Vector (1).png"
+        title="Remove Branch"
+        message="Are you sure you want to remove this branch? This action cannot be undone."
+        dynamicName={selectedLabId ?? ""}
+        type="warning"
+        onConfirm={() => {
+          if (selectedLabId) {
+            handleRemoveBranch(selectedLabId);
+          }
+          setIsModalOpens(false);
+        }}
+      />
 
 
       {/* Modal */}
@@ -305,8 +310,8 @@ const [selectedLabId, setSelectedLabId] = useState<string | null>(null);
                         onBlur={formik.handleBlur}
                         placeholder="Enter Branch Name"
                         className={`w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 ${formik.touched.labName && formik.errors.labName
-                            ? "focus:ring-red-500 border-red-500"
-                            : "focus:ring-blue-500 border-gray-300"
+                          ? "focus:ring-red-500 border-red-500"
+                          : "focus:ring-blue-500 border-gray-300"
                           }`}
                         required
                       />
@@ -329,8 +334,8 @@ const [selectedLabId, setSelectedLabId] = useState<string | null>(null);
                         onBlur={formik.handleBlur}
                         placeholder="Enter Lab Email"
                         className={`w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 ${formik.touched.email && formik.errors.email
-                            ? "focus:ring-red-500 border-red-500"
-                            : "focus:ring-blue-500 border-gray-300"
+                          ? "focus:ring-red-500 border-red-500"
+                          : "focus:ring-blue-500 border-gray-300"
                           }`}
                         required
                       />
@@ -353,8 +358,8 @@ const [selectedLabId, setSelectedLabId] = useState<string | null>(null);
                         onBlur={formik.handleBlur}
                         placeholder="Lab Number"
                         className={`w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 ${formik.touched.phoneNumber && formik.errors.phoneNumber
-                            ? "focus:ring-red-500 border-red-500"
-                            : "focus:ring-blue-500 border-gray-300"
+                          ? "focus:ring-red-500 border-red-500"
+                          : "focus:ring-blue-500 border-gray-300"
                           }`}
                         required
                       />
@@ -366,17 +371,17 @@ const [selectedLabId, setSelectedLabId] = useState<string | null>(null);
 
                   {/* Get OTP Button */}
                   {!otpVisible && (
-                  <button
-                    type="button"
-                    onClick={handleGetOtp}
-                    disabled={isOtpSending}
-                    className={`w-full font-bold py-3 rounded-md border-2 border-black ${isOtpSending
+                    <button
+                      type="button"
+                      onClick={handleGetOtp}
+                      disabled={isOtpSending}
+                      className={`w-full font-bold py-3 rounded-md border-2 border-black ${isOtpSending
                         ? "bg-gray-300 text-gray-700 cursor-not-allowed"
                         : "bg-yellow-300 hover:bg-yellow-400 text-black cursor-pointer"
-                      } transition-colors duration-200`}
-                  >
-                    {isOtpSending ? "Sending OTP..." : "Get OTP"}
-                  </button>
+                        } transition-colors duration-200`}
+                    >
+                      {isOtpSending ? "Sending OTP..." : "Get OTP"}
+                    </button>
                   )}
 
                   {/* OTP Section - Only show after OTP is sent */}
@@ -428,8 +433,8 @@ const [selectedLabId, setSelectedLabId] = useState<string | null>(null);
                         onClick={() => otpFormik.handleSubmit()}
                         disabled={isVerifyingOtp}
                         className={`w-full font-bold py-3 px-6 rounded-md transition-colors duration-200 ${isVerifyingOtp
-                            ? "bg-gray-300 text-gray-700 cursor-not-allowed"
-                            : "bg-yellow-300 hover:bg-yellow-400 text-black"
+                          ? "bg-gray-300 text-gray-700 cursor-not-allowed"
+                          : "bg-yellow-300 hover:bg-yellow-400 text-black"
                           }`}
                       >
                         {isVerifyingOtp ? "Verifying..." : "Verify"}
@@ -498,8 +503,8 @@ const [selectedLabId, setSelectedLabId] = useState<string | null>(null);
                           }}
                           placeholder="Enter Pin-Code"
                           className={`w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 ${formik.touched.pincode && formik.errors.pincode
-                              ? "focus:ring-red-500 border-red-500"
-                              : "focus:ring-blue-500 border-gray-300"
+                            ? "focus:ring-red-500 border-red-500"
+                            : "focus:ring-blue-500 border-gray-300"
                             }`}
                           required
                         />
@@ -524,8 +529,8 @@ const [selectedLabId, setSelectedLabId] = useState<string | null>(null);
                         type="submit"
                         disabled={isSubmitting}
                         className={`w-full sm:w-40 font-semibold py-2 rounded-xl text-lg ${isSubmitting
-                            ? "bg-gray-400 text-gray-700 cursor-not-allowed"
-                            : "bg-blue-600 text-white hover:bg-blue-700"
+                          ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+                          : "bg-blue-600 text-white hover:bg-blue-700"
                           } transition-colors`}
                       >
                         {isSubmitting ? "Saving..." : "Save"}

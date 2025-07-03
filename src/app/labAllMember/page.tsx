@@ -27,6 +27,7 @@ const Page: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
   const [selectedMemberId, setSelectedMemberId] = useState<Number | null>(null);
   const [selectedMemberIds, setSelectedMemberIds] = useState<Number | null>(null);
   const [isModalOpens, setIsModalOpens] = useState(false);
+  const Role = localStorage.getItem("role");
 
   const userId = localStorage.getItem("userId");
 
@@ -200,8 +201,9 @@ const Page: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
                     </div>
 
                     {/* Remove Member Button */}
-                    {adminMode && member.role === "Admin" && (
+                    {adminMode && member.role === "Admin" && Role !== "Member" && (
                       <div className="flex justify-end mt-2">
+
                         <button
                           type="button"
                           // onClick={() => handleRemoveMember(member.memberId)}
@@ -243,7 +245,7 @@ const Page: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
         </div>
 
         <div className="mt-2 flex justify-end mb-4 gap-3">
-
+{Role !== "Member" && 
           <button
             className="primary text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700 flex items-center gap-2 cursor-pointer"
             onClick={() => {
@@ -253,6 +255,8 @@ const Page: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
             <FontAwesomeIcon icon={faUserPlus} className="h-4 w-4" />
             {superCheckBox ? "Cancel" : "Super Admin"}
           </button>
+}
+{Role !== "Member" && 
           <button
             className="primary text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700 flex items-center gap-2 cursor-pointer"
             onClick={() => {
@@ -263,6 +267,7 @@ const Page: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
             <FontAwesomeIcon icon={faUserPlus} className="h-4 w-4" />
             {showCheckboxes ? "Cancel" : "Add Admin "}
           </button>
+}
 
         </div>
 
@@ -271,6 +276,7 @@ const Page: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
         <div className="p-4">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold text-blue-600">Team:</h2>
+            {Role !== "Member" && 
             <button
               type="button"
               className="bg-yellow-300 text-black px-4 py-2 rounded font-medium flex items-center gap-2 shadow hover:bg-yellow-400 cursor-pointer"
@@ -279,6 +285,7 @@ const Page: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
               <FontAwesomeIcon icon={faUsers} className="h-5 w-5" />
               {manageMode ? "Cancel" : "Manage Team"}
             </button>
+}
           </div>
 
           <form onSubmit={formik.handleSubmit}>
@@ -364,7 +371,7 @@ const Page: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
                     </div>
 
                     {/* Remove Member Button - Outside the card, centered below */}
-                    {manageMode && (
+                    {manageMode && Role !== "Member" && (
                       <div className="flex justify-end mt-2">
                         <button
                           type="button"
@@ -403,7 +410,7 @@ const Page: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
                 );
               })}
             </div>
-            {manageMode && (
+            {manageMode && Role !== "Member" &&  (
               <div className="flex justify-center mt-6">
                 <button
                   type="button"

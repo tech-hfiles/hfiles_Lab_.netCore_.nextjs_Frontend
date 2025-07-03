@@ -8,7 +8,7 @@ import Home from "../components/Home";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faLock } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/navigation';
-import { ForgotPasswordReq, LoginOTP, passwordForgot } from '@/services/labServiceApi';
+import { ForgotPasswordReq, LoginOTP, passwordForgot, UserOTPVerify } from '@/services/labServiceApi';
 
 const ForgotPasswordPage = () => {
   const [step, setStep] = useState(1);
@@ -43,7 +43,7 @@ const ForgotPasswordPage = () => {
     onSubmit: async (values) => {
       try {
         setIsVerifyingOtp(true);
-        const response = await LoginOTP({
+        const response = await UserOTPVerify({
           email: email,
           otp: values.otp,
         });
@@ -61,6 +61,7 @@ const ForgotPasswordPage = () => {
     },
   });
 
+  debugger
   const passwordFormik = useFormik({
     initialValues: {
       newPassword: '',
@@ -195,7 +196,7 @@ const ForgotPasswordPage = () => {
           An OTP has been sent to your email: <span className="text-blue-900">{maskEmail(email)}</span>
         </p>
 
-        {step === 2 ? (
+        {step === 1 ? (
           <form onSubmit={otpFormik.handleSubmit} className="space-y-6">
 
             {/* OTP Inputs */}

@@ -56,7 +56,12 @@ const errorHandler = (error: any) => {
   document.body.classList.remove("loading-indicator");
 
   const status = error?.response?.status;
-  const message = error?.response?.data?.message || "Something went wrong";
+  // const message = error?.response?.data?.message || "Something went wrong";
+  const message =
+  error?.response?.data?.data === null
+    ? null
+    : error?.response?.data?.message || "Something went wrong";
+
 
   if (status === 401) {
     // Unauthorized - clear all relevant storage and redirect
@@ -66,6 +71,7 @@ const errorHandler = (error: any) => {
     localStorage.removeItem("username");
     localStorage.removeItem("LabAdminId");
     localStorage.removeItem("switch");
+    localStorage.removeItem("role");
     window.location.href = "/labLogin";
   } else if (status === 404) {
     toast.error(message);

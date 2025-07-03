@@ -36,8 +36,13 @@ const AdminPanel = () => {
   const BASE_URL = "https://d7cop3y0lcg80.cloudfront.netreports/";
 
   const BranchList = async () => {
-    const response = await DeleteBrnaches();
-    setBranchList(response?.data?.data);
+    try {
+      const response = await DeleteBrnaches();
+      setBranchList(response?.data?.data || []);
+    } catch (error) {
+        console.error("Failed to fetch branches:", error);
+    setBranchList([]);
+    }
   }
 
   useEffect(() => {
@@ -220,7 +225,7 @@ const AdminPanel = () => {
                               setSelectedMember(null);
                             }}
                             imageSrc="/Vector.png"
-                            title={`Permanently Remove`} 
+                            title={`Permanently Remove`}
                             dynamicName={`${member.name}`}
                             message="You're about to permanently delete {name}. This action is irreversible."
                             type="warning"
@@ -241,9 +246,9 @@ const AdminPanel = () => {
                               setSelectedRestoreMember(null);
                             }}
                             imageSrc="/Vector.png"
-                              title={`Restore ${selectedRestoreMember?.role ?? "Member"}`}
+                            title={`Restore ${selectedRestoreMember?.role ?? "Member"}`}
                             dynamicName={`${member.name}`}
-                             message={`This action will restore the ${selectedRestoreMember?.role ?? "member"} back to the system. Are you sure you want to proceed?`}
+                            message={`This action will restore the ${selectedRestoreMember?.role ?? "member"} back to the system. Are you sure you want to proceed?`}
                             onConfirm={() => {
                               if (selectedRestoreMember) {
                                 handleRestore(

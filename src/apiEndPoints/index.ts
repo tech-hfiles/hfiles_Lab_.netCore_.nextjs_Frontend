@@ -26,7 +26,7 @@ export const endPoints = {
         LIST_LAB_USERLIST: (labId:number) => `${API_Lab_Reports}labs/${labId}/reports`,
          USERCARD: (labId: number) => `${API_Lab_Reports}labs/${labId}/users`,
         SEND_REPORT: API_Lab_Reports + "labs/reports/resend",
-        NOTIFICATION: (labId:number) => `${API_Lab_Reports}labs/${labId}/notifications`,
+        NOTIFICATION: (labId:number) => `${API_Lab_Reports}labs/${labId}/notification`,
         SUPER_ADMIN_PROMOTE : API_Lab_Reports + "labs/admin/promote",
         ALL_REPORTS : API_Lab_Reports + "labs/reports/all"
     },

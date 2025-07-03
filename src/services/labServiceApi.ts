@@ -183,3 +183,4 @@ return axiosInstance.get(`${endPoints.All_Members.GET_DELETE_MEMBER(labId)}`);
 export const RevertUser = async (data:any) =>{
   return axiosInstance.patch(`${endPoints.All_Members.REVERT_USER}`,data);
 }
+
