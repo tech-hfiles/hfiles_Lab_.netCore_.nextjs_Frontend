@@ -50,15 +50,6 @@ const LoginPage = () => {
     return phoneRegex.test(input.replace(/\s/g, ''));
   };
 
-
-  // const emailValidationSchema = Yup.object({
-  //   email: Yup.string()
-  //     .matches(
-  //       /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-  //       "Please enter a valid email address"
-  //     )
-  //     .required("Email is required"),
-  // });
   const emailValidationSchema =  Yup.object({
     emailOrPhone: Yup.string()
       .required("Email or Phone number is required")
