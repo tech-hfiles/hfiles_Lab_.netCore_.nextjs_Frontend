@@ -25,62 +25,67 @@ const successHandler = (response : any) => {
   return response;
 };
 
-// Response Interceptor (Error)
-// const errorHandler = (error : any) => {
+
+// const errorHandler = (error: any) => {
 //   document.body.classList.remove("loading-indicator");
 
-  
-//   const errorMessage =
-//     error?.response?.data;
-// debugger
-//   switch (error?.response?.data) {
-//     case 401:
-//        localStorage.removeItem("authToken");
-//        localStorage.removeItem("userId");
-//        localStorage.removeItem("emailId");
-//        localStorage.removeItem("username");
-//        localStorage.removeItem("LabAdminId");
-//        localStorage.removeItem("switch");
-//        window.location.href = "/labLogin";
-//     case 404:
-//     toast.error(error?.response.data.message);
-//     default:
-//       toast.error(errorMessage);
-//       break;
+//   const status = error?.response?.status;
+//   // const message = error?.response?.data?.message || "Something went wrong";
+//   const message =
+//   error?.response?.data?.data === null
+//     ? null
+//     : error?.response?.data?.data?.message || "Something went wrong";
+
+
+//   if (status === 401) {
+//     // Unauthorized - clear all relevant storage and redirect
+//     localStorage.removeItem("authToken");
+//     localStorage.removeItem("userId");
+//     localStorage.removeItem("emailId");
+//     localStorage.removeItem("username");
+//     localStorage.removeItem("LabAdminId");
+//     localStorage.removeItem("switch");
+//     localStorage.removeItem("role");
+//     window.location.href = "/labLogin";
+//   } else if (status === 404) {
+//     toast.error(message);
+//   } else {
+//     toast.error(message);
 //   }
 
 //   return Promise.reject({ ...error });
 // };
-
 const errorHandler = (error: any) => {
-  document.body.classList.remove("loading-indicator");
+  if (typeof document !== 'undefined') {
+    document.body.classList.remove("loading-indicator");
+  }
 
   const status = error?.response?.status;
-  // const message = error?.response?.data?.message || "Something went wrong";
-  const message =
-  error?.response?.data?.data === null
-    ? null
-    : error?.response?.data?.message || "Something went wrong";
 
+  // Enhanced message extraction:
+  const message =
+    error?.response?.data?.data?.message ||  // ✅ Handles: { data: { message: "..." } }
+    error?.response?.data?.message ||        // ✅ Handles: { message: "..." }
+    "Something went wrong";                  // fallback
 
   if (status === 401) {
-    // Unauthorized - clear all relevant storage and redirect
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("emailId");
-    localStorage.removeItem("username");
-    localStorage.removeItem("LabAdminId");
-    localStorage.removeItem("switch");
-    localStorage.removeItem("role");
-    window.location.href = "/labLogin";
-  } else if (status === 404) {
-    toast.error(message);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("emailId");
+      localStorage.removeItem("username");
+      localStorage.removeItem("LabAdminId");
+      localStorage.removeItem("switch");
+      localStorage.removeItem("role");
+      window.location.href = "/labLogin";
+    }
   } else {
-    toast.error(message);
+    toast.error(message); // ✅ Always show a relevant message
   }
 
   return Promise.reject({ ...error });
 };
+
 
 
 // Axios Instance

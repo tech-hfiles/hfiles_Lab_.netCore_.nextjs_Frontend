@@ -27,7 +27,7 @@ const LabHeader = () => {
   const router = useRouter();
   const [dropdownAnimating, setDropdownAnimating] = useState(false);
 
-
+  
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: any) => {

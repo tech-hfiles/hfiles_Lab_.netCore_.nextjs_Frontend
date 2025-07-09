@@ -47,7 +47,7 @@ const page = () => {
   const [patientCount, setPatientCount] = useState() as any;
   const [allReport, setAllReports] = useState() as any;
 //   const [userId, setUserId] = useState<string | null>(null);
-
+   
 //   useEffect(() => {
 //   const storedUserId = localStorage.getItem("userId");
 //   setUserId(storedUserId);

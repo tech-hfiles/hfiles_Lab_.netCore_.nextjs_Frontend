@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faEye, faEyeSlash, faPlus, faLock, faSquarePlus } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faEye, faEyeSlash,  faLock, faSquarePlus } from '@fortawesome/free-solid-svg-icons';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { CreateMemeber, HfidCheck, ListBranchData } from '@/services/labServiceApi';

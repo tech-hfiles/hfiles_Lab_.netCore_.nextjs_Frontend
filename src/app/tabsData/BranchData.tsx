@@ -219,17 +219,6 @@ const BranchData: React.FC<BranchDataProps> = ({
             </button>
           </div>
 
-          {/* Remove Branch button appears on hover */}
-          {/* <div className="absolute -bottom-0 left-1/2 transform -translate-x-1/2 hidden group-hover:flex">
-            <button
-              type="button"
-              onClick={() => handleRemoveBranch(String(branch.labId))}
-              className="text-red-500 text-sm font-medium hover:text-red-700 hover:underline flex items-center gap-1 cursor-pointer"
-            >
-              Remove Branch
-              <FontAwesomeIcon icon={faCircleMinus} />
-            </button>
-          </div> */}
           <div className="absolute -bottom-0 left-1/2 transform -translate-x-1/2 hidden group-hover:flex">
             {Role !== "Member" &&
               <button
@@ -441,49 +430,7 @@ const BranchData: React.FC<BranchDataProps> = ({
                       </button>
 
                     </>
-                    // <div className="space-y-4">
-                    //   <div className="flex items-start gap-3">
-                    //     <div className="flex-1">
-                    //       <input
-                    //         type="text"
-                    //         id="otp"
-                    //         name="otp"
-                    //         value={otpFormik.values.otp}
-                    //         onChange={otpFormik.handleChange}
-                    //         onBlur={otpFormik.handleBlur}
-                    //         placeholder="Enter OTP"
-                    //         className={`w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 ${
-                    //           otpFormik.touched.otp && otpFormik.errors.otp
-                    //             ? "focus:ring-red-500 border-red-500"
-                    //             : "focus:ring-blue-500 border-gray-300"
-                    //         }`}
-                    //         required
-                    //       />
-                    //       {otpFormik.touched.otp && otpFormik.errors.otp && (
-                    //         <p className="text-red-500 text-sm mt-1">{otpFormik.errors.otp}</p>
-                    //       )}
-                    //     </div>
-                    //     <button
-                    //       type="button"
-                    //       onClick={() => otpFormik.handleSubmit()}
-                    //       disabled={isVerifyingOtp}
-                    //       className={`font-bold py-3 px-6 rounded-md transition-colors duration-200 ${
-                    //         isVerifyingOtp
-                    //           ? "bg-gray-300 text-gray-700 cursor-not-allowed"
-                    //           : "bg-yellow-300 hover:bg-yellow-400 text-black"
-                    //       }`}
-                    //     >
-                    //       {isVerifyingOtp ? "Verifying..." : "Verify"}
-                    //     </button>
-                    //   </div>
-
-                    //   {/* OTP Verification Status */}
-                    //   {isOtpVerified && (
-                    //     <div className="text-green-600 text-sm text-center">
-                    //       ✓ OTP Verified Successfully!
-                    //     </div>
-                    //   )}
-                    // </div>
+                   
                   )}
 
                   {/* Pin Code - Only show after OTP is verified */}

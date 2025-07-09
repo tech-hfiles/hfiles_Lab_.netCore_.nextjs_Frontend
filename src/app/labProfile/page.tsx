@@ -14,12 +14,12 @@ import { useRouter } from "next/navigation";
 import { ListBranchData, CreateBranch, DeleteBranch, UpdateProfile, UserCardList } from "@/services/labServiceApi";
 import { toast, ToastContainer } from "react-toastify";
 import BranchData from "../tabsData/BranchData";
-import Page from "../labAllMember/page";
 import Drawer from "../components/Drawer";
 import Tooltip from './../components/Tooltip';
 import ProfileEditModal from "./component/ProfileEditModalProps";
 import BranchInformation from "../components/pageInfomations/BranchInformation";
 import MemberInformation from "../components/pageInfomations/MemberInformation";
+import LabAllMemberPage from "../components/LabAllMemberPage";
 
 interface Admin {
   adminId: number;
@@ -45,7 +45,6 @@ const page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [branchList, setBranchList] = useState([]) as any;
   const [hasSwitched, setHasSwitched] = useState(false);
-  const userId = localStorage.getItem("userId");
   const [isEditing, setIsEditing] = useState(false);
   const [editedAddress, setEditedAddress] = useState("");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -58,6 +57,13 @@ const page = () => {
     const [userCount, setUserCount] = useState() as any;
     const [selectedLab, setSelectedLab] = useState<any>(null);
 const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+
+const [userId, setUserId] = useState<string | null>(null);
+   
+  useEffect(() => {
+    const storedUserId = localStorage.getItem("userId");
+    setUserId(storedUserId);
+  }, []);
 
   // Formik & Yup schema
   const formik = useFormik({
@@ -352,7 +358,7 @@ const filteredData = activeTab === 'branches'
             formik={formik} BASE_URL={""}          />
         )}
 
-        {activeTab === 'members' && <Page  filteredData={filteredData} CardList={CardList} adminsList={adminsList}/>}
+        {activeTab === 'members' && <LabAllMemberPage  filteredData={filteredData} CardList={CardList} adminsList={adminsList}/>}
         <ToastContainer />
       </div>
     </DefaultLayout>

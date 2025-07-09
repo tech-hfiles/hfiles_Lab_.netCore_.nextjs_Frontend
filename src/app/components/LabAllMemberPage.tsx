@@ -1,13 +1,13 @@
 'use client';
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleMinus, faUserPlus, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { AddMember, DeleteMember, PromoteSuperAdmin } from "@/services/labServiceApi";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
 import { toast, ToastContainer } from "react-toastify";
-import AddTeamMemberModal from "./components/AddTeamMemberModal";
 import GenericConfirmModal from "../components/GenericConfirmModal";
+import AddTeamMemberModal from "./AddTeamMemberModal";
 
 
 interface PageProps {
@@ -16,7 +16,7 @@ interface PageProps {
   adminsList: any;
 }
 
-const Page: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
+const LabAllMemberPage: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
   const [showCheckboxes, setShowCheckboxes] = useState(false);
   const [superCheckBox, setSuperCheckBox] = useState(false)
   const [manageMode, setManageMode] = useState(false);
@@ -27,9 +27,13 @@ const Page: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
   const [selectedMemberId, setSelectedMemberId] = useState<Number | null>(null);
   const [selectedMemberIds, setSelectedMemberIds] = useState<Number | null>(null);
   const [isModalOpens, setIsModalOpens] = useState(false);
-  const Role = localStorage.getItem("role");
+  const [role, setRole] = useState<string | null>(null);
 
-  const userId = localStorage.getItem("userId");
+    useEffect(() => {
+    const storedRole = localStorage.getItem("role");
+    setRole(storedRole);
+  }, []);
+
 
   const BASE_URL = "https://hfiles.in/upload/";
 
@@ -151,26 +155,10 @@ const Page: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
                               <input
                                 type="checkbox"
                                 checked={isChecked}
-                                // onChange={() => {
-                                //   const selected = formik.values.selectedMembers;
-                                //   if (selected.includes(member.memberId)) {
-                                //     formik.setFieldValue(
-                                //       'selectedMembers',
-                                //       selected.filter(id => id !== member.memberId)
-                                //     );
-                                //   } else {
-                                //     formik.setFieldValue(
-                                //       'selectedMembers',
-                                //       [...selected, member.memberId]
-                                //     );
-                                //   }
-                                // }}
                                 onChange={() => {
                                   if (superCheckBox) {
-                                    // When superCheckBox is active, only select one member (replace selectedMembers)
                                     formik.setFieldValue('selectedMembers', [member.memberId]);
                                   } else {
-                                    // Normal multiple selection toggle
                                     const selected = formik.values.selectedMembers;
                                     if (selected.includes(member.memberId)) {
                                       formik.setFieldValue(
@@ -201,12 +189,11 @@ const Page: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
                     </div>
 
                     {/* Remove Member Button */}
-                    {adminMode && member.role === "Admin" && Role !== "Member" && (
+                    {adminMode && member.role === "Admin" && role !== "Member" && (
                       <div className="flex justify-end mt-2">
 
                         <button
                           type="button"
-                          // onClick={() => handleRemoveMember(member.memberId)}
                           onClick={() => {
                             setSelectedMemberId(member.memberId);
                             setIsModalOpen(true);
@@ -245,29 +232,29 @@ const Page: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
         </div>
 
         <div className="mt-2 flex justify-end mb-4 gap-3">
-{Role !== "Member" && 
-          <button
-            className="primary text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700 flex items-center gap-2 cursor-pointer"
-            onClick={() => {
-              setSuperCheckBox(prev => !prev);
-            }}
-          >
-            <FontAwesomeIcon icon={faUserPlus} className="h-4 w-4" />
-            {superCheckBox ? "Cancel" : "Super Admin"}
-          </button>
-}
-{Role !== "Member" && 
-          <button
-            className="primary text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700 flex items-center gap-2 cursor-pointer"
-            onClick={() => {
-              setShowCheckboxes(prev => !prev);
-              setAdminMode(prev => !prev);
-            }}
-          >
-            <FontAwesomeIcon icon={faUserPlus} className="h-4 w-4" />
-            {showCheckboxes ? "Cancel" : "Add Admin "}
-          </button>
-}
+          {role !== "Member" &&
+            <button
+              className="primary text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700 flex items-center gap-2 cursor-pointer"
+              onClick={() => {
+                setSuperCheckBox(prev => !prev);
+              }}
+            >
+              <FontAwesomeIcon icon={faUserPlus} className="h-4 w-4" />
+              {superCheckBox ? "Cancel" : "Super Admin"}
+            </button>
+          }
+          {role !== "Member" &&
+            <button
+              className="primary text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700 flex items-center gap-2 cursor-pointer"
+              onClick={() => {
+                setShowCheckboxes(prev => !prev);
+                setAdminMode(prev => !prev);
+              }}
+            >
+              <FontAwesomeIcon icon={faUserPlus} className="h-4 w-4" />
+              {showCheckboxes ? "Cancel" : "Add Admin "}
+            </button>
+          }
 
         </div>
 
@@ -276,16 +263,16 @@ const Page: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
         <div className="p-4">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold text-blue-600">Team:</h2>
-            {Role !== "Member" && 
-            <button
-              type="button"
-              className="bg-yellow-300 text-black px-4 py-2 rounded font-medium flex items-center gap-2 shadow hover:bg-yellow-400 cursor-pointer"
-              onClick={() => setManageMode(!manageMode)}
-            >
-              <FontAwesomeIcon icon={faUsers} className="h-5 w-5" />
-              {manageMode ? "Cancel" : "Manage Team"}
-            </button>
-}
+            {role !== "Member" &&
+              <button
+                type="button"
+                className="bg-yellow-300 text-black px-4 py-2 rounded font-medium flex items-center gap-2 shadow hover:bg-yellow-400 cursor-pointer"
+                onClick={() => setManageMode(!manageMode)}
+              >
+                <FontAwesomeIcon icon={faUsers} className="h-5 w-5" />
+                {manageMode ? "Cancel" : "Manage Team"}
+              </button>
+            }
           </div>
 
           <form onSubmit={formik.handleSubmit}>
@@ -371,7 +358,7 @@ const Page: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
                     </div>
 
                     {/* Remove Member Button - Outside the card, centered below */}
-                    {manageMode && Role !== "Member" && (
+                    {manageMode && role !== "Member" && (
                       <div className="flex justify-end mt-2">
                         <button
                           type="button"
@@ -410,7 +397,7 @@ const Page: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
                 );
               })}
             </div>
-            {manageMode && Role !== "Member" &&  (
+            {manageMode && role !== "Member" && (
               <div className="flex justify-center mt-6">
                 <button
                   type="button"
@@ -461,4 +448,4 @@ const Page: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
   );
 };
 
-export default Page;
+export default LabAllMemberPage;
