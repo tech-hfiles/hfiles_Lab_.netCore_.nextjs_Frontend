@@ -58,12 +58,9 @@ const page = () => {
     const [selectedLab, setSelectedLab] = useState<any>(null);
 const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
-const [userId, setUserId] = useState<string | null>(null);
-   
-  useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
-    setUserId(storedUserId);
-  }, []);
+
+    const userId = localStorage.getItem("userId");
+  
 
   // Formik & Yup schema
   const formik = useFormik({
