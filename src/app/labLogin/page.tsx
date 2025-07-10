@@ -17,8 +17,6 @@ const LoginPage = () => {
   const inputRefs = useRef<HTMLInputElement[]>([]);
   const [timers, setTimers] = useState(300);
 
-  // Format time as MM:SS
-  // hiii
 
   const formatTimes = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -51,15 +49,14 @@ const LoginPage = () => {
     return phoneRegex.test(input.replace(/\s/g, ''));
   };
 
-  const emailValidationSchema =  Yup.object({
+  const emailValidationSchema = Yup.object({
     emailOrPhone: Yup.string()
       .required("Email or Phone number is required")
-      .test('email-or-phone', 'Please enter a valid email address or phone number', function(value) {
+      .test('email-or-phone', 'Please enter a valid email address or phone number', function (value) {
         if (!value) return false;
         return isEmail(value) || isPhoneNumber(value);
       }),
   });
-
 
 
   const otpValidationSchema = Yup.object({
@@ -76,15 +73,15 @@ const LoginPage = () => {
 
   const emailFormik = useFormik({
     initialValues: {
-       emailOrPhone: "",
+      emailOrPhone: "",
     },
     validationSchema: emailValidationSchema,
     onSubmit: async (values) => {
       setIsSubmittingOTP(true);
       try {
-         const payload: { email?: string; phoneNumber?: string } = {};
+        const payload: { email?: string; phoneNumber?: string } = {};
 
-          if (isEmail(values.emailOrPhone)) {
+        if (isEmail(values.emailOrPhone)) {
           payload.email = values.emailOrPhone;
         } else {
           payload.phoneNumber = values.emailOrPhone;
@@ -113,11 +110,11 @@ const LoginPage = () => {
       try {
         const isEmail = emailFormik.values.emailOrPhone.includes('@');
         const response = await LoginOTP({
-  ...(isEmail
-    ? { email: emailFormik.values.emailOrPhone }
-    : { phoneNumber: emailFormik.values.emailOrPhone }),
-  otp: values.otp,
-});
+          ...(isEmail
+            ? { email: emailFormik.values.emailOrPhone }
+            : { phoneNumber: emailFormik.values.emailOrPhone }),
+          otp: values.otp,
+        });
         toast.success(`${response.data.message}`);
         localStorage.setItem("emailId", response?.data?.data?.email);
         localStorage.setItem("userId", response.data.data.userId);
@@ -209,13 +206,6 @@ const LoginPage = () => {
     }
   };
 
-  const handleBackToLogin = () => {
-    setShowOtp(false);
-    setShowPasswordLogin(false);
-    otpFormik.resetForm();
-    passwordLoginFormik.resetForm();
-  };
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -294,7 +284,7 @@ const LoginPage = () => {
             {!showOtp && !showPasswordLogin && (
               <form onSubmit={emailFormik.handleSubmit} className="w-full px-6">
                 <div className="w-full mb-2">
-                   <input
+                  <input
                     type="text"
                     id="emailOrPhone"
                     name="emailOrPhone"
@@ -338,7 +328,7 @@ const LoginPage = () => {
                   </a>{" "}
                   to log in with Password
                 </p>
-           </form>
+              </form>
             )}
 
             {showOtp && (
@@ -350,7 +340,7 @@ const LoginPage = () => {
                 <div className="w-full mb-2">
                   <div className="md:col-span-2 flex flex-col items-center mt-1 border rounded-md px-4 py-3 w-full">
                     <div className="flex flex-wrap justify-center gap-3 mb-2">
-                      
+
                       {[0, 1, 2, 3, 4, 5].map((index) => (
                         <input
                           key={index}
@@ -363,9 +353,9 @@ const LoginPage = () => {
                           onChange={(e) => {
                             const val = e.target.value;
                             if (/^\d?$/.test(val)) {
-                              const otp = otpFormik.values.otp.split(""); 
+                              const otp = otpFormik.values.otp.split("");
                               otp[index] = val;
-                              otpFormik.setFieldValue("otp", otp.join("")); 
+                              otpFormik.setFieldValue("otp", otp.join(""));
 
                               if (val && index < 5) {
                                 const nextInput = document.getElementById(`otp-${index + 1}`);

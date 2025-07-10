@@ -19,7 +19,7 @@ const SignUp = () => {
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   const [timer, setTimer] = useState(300);
 
-
+// SignUp Form Data
   const formik = useFormik({
     initialValues: {
       labName: "",
@@ -45,9 +45,9 @@ const SignUp = () => {
       };
       try {
         const response = await signUp(payload);
-        if(response?.data?.message){
-        toast.success(`${response.data.message}`);
-        router.push("/thankYou");
+        if (response?.data?.message) {
+          toast.success(`${response.data.message}`);
+          router.push("/thankYou");
         }
       } catch (error) {
         console.error("Sign Up Error:", error);
@@ -60,6 +60,7 @@ const SignUp = () => {
     },
   });
 
+  // This is OTP Generate
   const handleGetOtp = async () => {
     const errors = await formik.validateForm();
     formik.setTouched({
@@ -94,7 +95,7 @@ const SignUp = () => {
     }
   };
 
-   // Format time as MM:SS
+  // Format time as MM:SS
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
     const s = seconds % 60;
@@ -212,139 +213,139 @@ const SignUp = () => {
                 )}
               </div>
 
-             <div className="relative">
-  <input
-    type={showPassword ? "text" : "password"}
-    name="password"
-    placeholder="Password"
-    className="w-full border border-black rounded-md px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    onChange={formik.handleChange}
-    onBlur={formik.handleBlur}
-    value={formik.values.password}
-  />
-  <span
-    onClick={() => setShowPassword(!showPassword)}
-    className="absolute right-3 top-1/3 -translate-y-1/2 text-gray-500 cursor-pointer"
-  >
-    <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
-  </span>
-  <div className="min-h-[1.25rem] mt-1">
-    {formik.touched.password && formik.errors.password && (
-      <p className="text-red-500 text-xs">
-        {formik.errors.password}
-      </p>
-    )}
-  </div>
-</div>
-
-
-
-             <div className="relative">
-  <input
-    type={showConfirm ? "text" : "password"}
-    name="confirmPassword"
-    placeholder="Confirm Password"
-    className="w-full border border-black rounded-md px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    onChange={formik.handleChange}
-    onBlur={formik.handleBlur}
-    value={formik.values.confirmPassword}
-  />
-  <span
-    onClick={() => setShowConfirm(!showConfirm)}
-    className="absolute right-3 top-1/3 -translate-y-1/2 text-gray-500 cursor-pointer"
-  >
-    <FontAwesomeIcon icon={showConfirm ? faEye : faEyeSlash} />
-  </span>
-  <div className="min-h-[1.25rem] mt-1">
-    {formik.touched.confirmPassword && formik.errors.confirmPassword && (
-      <p className="text-red-500 text-xs">
-        {formik.errors.confirmPassword}
-      </p>
-    )}
-  </div>
-</div>
-
-
-                  {!otpVisible &&
-                    !isCaptchaVerified &&
-                    formik.values.labName &&
-                    formik.values.labEmail &&
-                    formik.values.phone &&
-                    formik.values.pincode &&
-                    formik.values.password &&
-                    formik.values.confirmPassword &&
-                    Object.keys(formik.errors).length === 0 && (
-                      <div className="md:col-span-2 flex justify-center mt-2 mb-1">
-                        <Captcha onVerify={() => setIsCaptchaVerified(true)} />
-                      </div>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Password"
+                  className="w-full border border-black rounded-md px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.password}
+                />
+                <span
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/3 -translate-y-1/2 text-gray-500 cursor-pointer"
+                >
+                  <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
+                </span>
+                <div className="min-h-[1.25rem] mt-1">
+                  {formik.touched.password && formik.errors.password && (
+                    <p className="text-red-500 text-xs">
+                      {formik.errors.password}
+                    </p>
                   )}
+                </div>
+              </div>
+
+
+
+              <div className="relative">
+                <input
+                  type={showConfirm ? "text" : "password"}
+                  name="confirmPassword"
+                  placeholder="Confirm Password"
+                  className="w-full border border-black rounded-md px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.confirmPassword}
+                />
+                <span
+                  onClick={() => setShowConfirm(!showConfirm)}
+                  className="absolute right-3 top-1/3 -translate-y-1/2 text-gray-500 cursor-pointer"
+                >
+                  <FontAwesomeIcon icon={showConfirm ? faEye : faEyeSlash} />
+                </span>
+                <div className="min-h-[1.25rem] mt-1">
+                  {formik.touched.confirmPassword && formik.errors.confirmPassword && (
+                    <p className="text-red-500 text-xs">
+                      {formik.errors.confirmPassword}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+
+              {!otpVisible &&
+                !isCaptchaVerified &&
+                formik.values.labName &&
+                formik.values.labEmail &&
+                formik.values.phone &&
+                formik.values.pincode &&
+                formik.values.password &&
+                formik.values.confirmPassword &&
+                Object.keys(formik.errors).length === 0 && (
+                  <div className="md:col-span-2 flex justify-center mt-2 mb-1">
+                    <Captcha onVerify={() => setIsCaptchaVerified(true)} />
+                  </div>
+                )}
 
               {otpVisible && (
                 <>
                   <div className="md:col-span-2 flex flex-col items-center mt-1 border rounded-md px-4 py-3 w-full">
                     <div className="flex flex-wrap justify-center gap-3 mb-2">
-                     {[0, 1, 2, 3, 4, 5].map((index) => (
-                      <input
-                        key={index}
-                        id={`otp-${index}`}
-                        type="text"
-                        inputMode="numeric"
-                        maxLength={1}
-                        className="w-10 h-12 text-center border-b text-lg focus:outline-none focus:border-blue-500 sm:w-12 md:w-14"
-                        value={formik.values.otp[index] || ""}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          if (/^\d?$/.test(val)) {
-                            const newOtp =
-                              formik.values.otp.substring(0, index) +
-                              val +
-                              formik.values.otp.substring(index + 1);
-                            formik.setFieldValue("otp", newOtp);
+                      {[0, 1, 2, 3, 4, 5].map((index) => (
+                        <input
+                          key={index}
+                          id={`otp-${index}`}
+                          type="text"
+                          inputMode="numeric"
+                          maxLength={1}
+                          className="w-10 h-12 text-center border-b text-lg focus:outline-none focus:border-blue-500 sm:w-12 md:w-14"
+                          value={formik.values.otp[index] || ""}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (/^\d?$/.test(val)) {
+                              const newOtp =
+                                formik.values.otp.substring(0, index) +
+                                val +
+                                formik.values.otp.substring(index + 1);
+                              formik.setFieldValue("otp", newOtp);
 
-                            if (val && index < 5) {
-                              const nextInput = document.getElementById(`otp-${index + 1}`);
-                              nextInput?.focus();
-                            }
-                          }
-                        }}
-                        onPaste={(e) => {
-                          e.preventDefault();
-                          const pasteData = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
-                          if (pasteData) {
-                            const updatedOtp = pasteData.padEnd(6, " "); 
-                            formik.setFieldValue("otp", updatedOtp);
-
-                            setTimeout(() => {
-                              for (let i = 0; i < updatedOtp.length; i++) {
-                                const input = document.getElementById(`otp-${i}`);
-                                input?.focus();
+                              if (val && index < 5) {
+                                const nextInput = document.getElementById(`otp-${index + 1}`);
+                                nextInput?.focus();
                               }
-                            }, 0);
-                          }
-                        }}
-                      />
-                    ))}
+                            }
+                          }}
+                          onPaste={(e) => {
+                            e.preventDefault();
+                            const pasteData = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+                            if (pasteData) {
+                              const updatedOtp = pasteData.padEnd(6, " ");
+                              formik.setFieldValue("otp", updatedOtp);
+
+                              setTimeout(() => {
+                                for (let i = 0; i < updatedOtp.length; i++) {
+                                  const input = document.getElementById(`otp-${i}`);
+                                  input?.focus();
+                                }
+                              }, 0);
+                            }
+                          }}
+                        />
+                      ))}
 
                     </div>
                   </div>
 
-              <div className="font-medium px-2">
-                Time left: {formatTime(timer)}
-              </div>
-                
-                <div className='flex justify-end'>
+                  <div className="font-medium px-2">
+                    Time left: {formatTime(timer)}
+                  </div>
+
+                  <div className='flex justify-end'>
                     <button
-                    type="button"
-                    onClick={async () => {
-                      formik.setFieldValue("otp", "");
-                      await handleGetOtp();
-                      setTimer(300);
-                    }}
-                    className="text-blue-800 text-sm font-medium mt-2 mb-3 md:col-span-2 flex justify-end md:self-end"
-                  >
-                    Resend OTP
-                  </button>
-                </div>
+                      type="button"
+                      onClick={async () => {
+                        formik.setFieldValue("otp", "");
+                        await handleGetOtp();
+                        setTimer(300);
+                      }}
+                      className="text-blue-800 text-sm font-medium mt-2 mb-3 md:col-span-2 flex justify-end md:self-end"
+                    >
+                      Resend OTP
+                    </button>
+                  </div>
                 </>
               )}
 
@@ -365,28 +366,28 @@ const SignUp = () => {
                     checked={formik.values.acceptTerms}
                     className="w-4 h-4 accent-blue-600"
                   />
-          <div className="text-sm text-gray-700">
-  <label htmlFor="acceptTerms" className="mr-1">
-    I Accept The
-  </label>
-  <a
-    href="https://hfiles.in/Terms&Conditions"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="text-blue-800 font-semibold hover:underline"
-  >
-    Terms & Conditions
-  </a>{" "}
-  &{" "}
-  <a
-    href="https://hfiles.in/privacypolicy"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="text-blue-800 font-semibold hover:underline"
-  >
-    Privacy Policy
-  </a>
-</div>
+                  <div className="text-sm text-gray-700">
+                    <label htmlFor="acceptTerms" className="mr-1">
+                      I Accept The
+                    </label>
+                    <a
+                      href="https://hfiles.in/Terms&Conditions"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-800 font-semibold hover:underline"
+                    >
+                      Terms & Conditions
+                    </a>{" "}
+                    &{" "}
+                    <a
+                      href="https://hfiles.in/privacypolicy"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-800 font-semibold hover:underline"
+                    >
+                      Privacy Policy
+                    </a>
+                  </div>
 
 
                 </div>

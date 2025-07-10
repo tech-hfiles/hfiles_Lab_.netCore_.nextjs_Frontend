@@ -68,9 +68,9 @@ const errorHandler = (error: any) => {
 
   // Enhanced message extraction:
   const message =
-    error?.response?.data?.data?.message ||  // ✅ Handles: { data: { message: "..." } }
-    error?.response?.data?.message ||        // ✅ Handles: { message: "..." }
-    "Something went wrong";                  // fallback
+    error?.response?.data?.data?.message ||  
+    error?.response?.data?.message ||        
+    "Something went wrong";                  
 
   if (status === 401) {
     if (typeof window !== 'undefined') {

@@ -21,11 +21,9 @@ const AdminPanel = () => {
   const [isLabsExpanded, setIsLabsExpanded] = useState(false);
   const [menuOpenId, setMenuOpenId] = useState<number | null>(null);
   const [branchList, setBranchList] = useState() as any;
-  const [menuOpen, setMenuOpen] = useState() as any;
   const [selectedBranchId, setSelectedBranchId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-   const [userId] = useState<string | null>(getStoredUserId);
-  // const userId = localStorage.getItem("userId");
+  const [userId] = useState<string | null>(getStoredUserId);
   const [listMember, setListMember] = useState() as any;
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<{ id: number; labId: number } | null>(null);
@@ -42,13 +40,14 @@ const AdminPanel = () => {
   const BASE_URL_CDN = "https://hfiles.in/upload/";
   const BASE_URL = "https://d7cop3y0lcg80.cloudfront.netreports/";
 
+  // This is Delete Branch List Api
   const BranchList = async () => {
     try {
       const response = await DeleteBrnaches();
       setBranchList(response?.data?.data || []);
     } catch (error) {
-        console.error("Failed to fetch branches:", error);
-    setBranchList([]);
+      console.error("Failed to fetch branches:", error);
+      setBranchList([]);
     }
   }
 
@@ -56,6 +55,7 @@ const AdminPanel = () => {
     BranchList();
   }, [])
 
+  // This handle is rever Beranch
   const handleRevertBranch = async (id: number) => {
     const payload = {
       id: id
@@ -69,7 +69,7 @@ const AdminPanel = () => {
     }
   };
 
-
+  // This api for Delete Member
   const DeletedMember = async () => {
     const response = await GetMemberList(Number(userId));
     setListMember(response?.data?.data?.deletedMembers);
@@ -79,6 +79,7 @@ const AdminPanel = () => {
     DeletedMember();
   }, [])
 
+  // This is for Restore the user
   const handleRestore = async (id: number, labId: number, role: string) => {
     const payload = {
       id,
@@ -95,6 +96,7 @@ const AdminPanel = () => {
     }
   };
 
+  // This is Pramanetly remove 
   const handleRemovePermanently = async (id: number, labId: number) => {
     const payload = { id, labId };
     try {
@@ -117,8 +119,6 @@ const AdminPanel = () => {
               ← Back Home
             </p>
           </Link>
-
-
 
           <div className=" items-center justify-center bg-white relative ">
 
@@ -184,14 +184,7 @@ const AdminPanel = () => {
                                 <p className="px-4 py-2 text-blue-800 font-semibold text-sm border-black">
                                   Restore as
                                 </p>
-                                {/* <button className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 text-sm border border-gray-200 cursor-pointer"
-                              onClick={() => handleRestore(member.id, member.labId, "Admin")}>
-                                Admin
-                              </button>
-                              <button className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 text-sm border border-gray-200 cursor-pointer"
-                              onClick={() => handleRestore(member.id, member.labId, "Member")}>
-                                Team
-                              </button> */}
+                               
                                 <button
                                   className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 text-sm border border-gray-200 cursor-pointer"
                                   onClick={() => {
@@ -268,8 +261,6 @@ const AdminPanel = () => {
                               setSelectedRestoreMember(null);
                             }}
                           />
-
-
 
                         </div>
 
@@ -350,7 +341,7 @@ const AdminPanel = () => {
                                   onClick={() => {
                                     setSelectedBranchId(lab.id);
                                     setIsModalOpen(true);
-                                    setMenuOpenId(null); // close dropdown
+                                    setMenuOpenId(null); 
                                   }}
                                 >
                                   Restore Branch
@@ -374,7 +365,7 @@ const AdminPanel = () => {
                                 }
                                 setIsModalOpen(false);
                                 setSelectedBranchId(null);
-                                BranchList(); // refresh updated list
+                                BranchList(); 
                               }}
                             />
 
@@ -391,7 +382,6 @@ const AdminPanel = () => {
                                 : "/3d77b13a07b3de61003c22d15543e99c9e08b69b.jpg"
                             }
 
-                            // src={lab.profilePhoto}
                             alt={lab.labName}
                             className="w-16 h-16 rounded-md object-cover border"
                           />

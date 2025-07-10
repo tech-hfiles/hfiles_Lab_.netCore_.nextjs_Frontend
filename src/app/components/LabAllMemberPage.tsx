@@ -391,7 +391,7 @@ const LabAllMemberPage: React.FC<PageProps> = ({ filteredData, CardList, adminsL
                         setSelectedMemberIds(null);
                       }}
                       imageSrc="/Vector (1).png"
-                      title="Remove Member?"
+                      title="Remove Member"
                       message="They will lose access to the system. You can retrieve it from the system at any time."
                       type="warning"
                       onConfirm={() => {

@@ -10,11 +10,9 @@ import {
   faInfoCircle
 } from "@fortawesome/free-solid-svg-icons";
 import DefaultLayout from "../components/DefaultLayout";
-import DatePicker from "react-datepicker";
 import CustomDatePicker from "../components/Datepicker/CustomDatePicker";
 import { useRouter } from "next/navigation";
 import { ListUser, ListAllReports } from "@/services/labServiceApi";
-import { number } from "yup";
 import Tooltip from "../components/Tooltip";
 import Drawer from "../components/Drawer";
 import HomeInformation from "../components/pageInfomations/HomeInformation";
@@ -50,17 +48,10 @@ const page = () => {
   const pageSize = 20;
   const [formattedStart, setFormattedStart] = useState("");
   const [formattedEnd, setFormattedEnd] = useState("");
-  // const userId = localStorage.getItem("userId");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [patientCount, setPatientCount] = useState() as any;
   const [allReport, setAllReports] = useState() as any;
-//   const [userId, setUserId] = useState<string | null>(null);
-   
-//   useEffect(() => {
-//   const storedUserId = localStorage.getItem("userId");
-//   setUserId(storedUserId);
-// }, []);
-const [userId] = useState<string | null>(getStoredUserId);
+  const [userId] = useState<string | null>(getStoredUserId);
 
 
 
@@ -80,7 +71,6 @@ const [userId] = useState<string | null>(getStoredUserId);
   }, []);
 
 
-  // const filteredData = patientData?.filter((patient) =>
   const filteredData = (searchQuery.trim() !== "" ? allReport : patientData)?.filter((patient: any) =>
     patient.hfid.toLowerCase().includes(searchQuery.toLowerCase()) ||
     patient.name.toLowerCase().includes(searchQuery.toLowerCase())
