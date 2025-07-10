@@ -40,6 +40,13 @@ interface Member {
   promotedByName: string;
 }
 
+const getStoredUserId = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("userId");
+  }
+  return null;
+};
+
 const page = () => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -58,8 +65,8 @@ const page = () => {
     const [selectedLab, setSelectedLab] = useState<any>(null);
 const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
-
-    const userId = localStorage.getItem("userId");
+const [userId] = useState<string | null>(getStoredUserId);
+    // const userId = localStorage.getItem("userId");
   
 
   // Formik & Yup schema

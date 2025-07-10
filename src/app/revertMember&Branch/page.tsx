@@ -8,6 +8,12 @@ import { toast, ToastContainer } from 'react-toastify';
 import GenericConfirmModal from "../components/GenericConfirmModal";
 import Link from 'next/link';
 
+const getStoredUserId = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("userId");
+  }
+  return null;
+};
 
 
 const AdminPanel = () => {
@@ -18,7 +24,8 @@ const AdminPanel = () => {
   const [menuOpen, setMenuOpen] = useState() as any;
   const [selectedBranchId, setSelectedBranchId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const userId = localStorage.getItem("userId");
+   const [userId] = useState<string | null>(getStoredUserId);
+  // const userId = localStorage.getItem("userId");
   const [listMember, setListMember] = useState() as any;
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<{ id: number; labId: number } | null>(null);

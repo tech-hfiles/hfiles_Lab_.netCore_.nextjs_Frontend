@@ -77,6 +77,20 @@ const validationSchema = Yup.object().shape({
   patients: Yup.array().of(patientSchema),
 });
 
+const getStoredUserId = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("userId");
+  }
+  return null;
+};
+
+const getStoredIsSwitch = (): string | null => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("switch");
+  }
+  return null;
+};
+
 const HTransferPage: React.FC = () => {
   const router = useRouter();
   const [forms, setForms] = useState<Patient[]>([
@@ -92,8 +106,10 @@ const HTransferPage: React.FC = () => {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const userId = localStorage.getItem("userId");
-  const isSwitched = localStorage.getItem("switch") === "true";
+    const [userId] = useState<string | null>(getStoredUserId);
+    const [isSwitched] = useState<string | null>(getStoredIsSwitch);
+  // const userId = localStorage.getItem("userId");
+  // const isSwitched = localStorage.getItem("switch") === "true";
 
   const transformPayload = (patients: Patient[]) => {
     const formData = new FormData();

@@ -18,6 +18,13 @@ interface BranchDataProps {
   isModalOpen: boolean;
   formik: any;
 }
+const getStoredRole = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("role");
+  }
+  return null;
+};
+
 
 const BranchData: React.FC<BranchDataProps> = ({
   setIsModalOpen,
@@ -39,7 +46,10 @@ const BranchData: React.FC<BranchDataProps> = ({
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
   const [isModalOpens, setIsModalOpens] = useState(false);
   const [selectedLabId, setSelectedLabId] = useState<string | null>(null);
-  const Role = localStorage.getItem("role");
+  // const Role = localStorage.getItem("role");
+  const [Role] = useState<string | null>(getStoredRole);
+
+
 
 
   // OTP Formik setup

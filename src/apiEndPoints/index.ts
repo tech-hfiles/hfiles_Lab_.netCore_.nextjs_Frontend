@@ -1,6 +1,7 @@
 // Api EndPoints
 
-export const API_Lab_Reports = "https://localhost:7227/api/";
+// export const API_Lab_Reports = "https://localhost:7227/api/";
+export const API_Lab_Reports = "https://test.hfiles.co.in/api/";
 
 
 export const endPoints = {

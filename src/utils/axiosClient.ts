@@ -2,9 +2,13 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
+
+
 // Get token from localStorage
 const getUserToken = () => {
+   if (typeof window !== "undefined") {
   return localStorage.getItem("authToken");
+   }
 };
 
 // Request Interceptor
@@ -80,7 +84,7 @@ const errorHandler = (error: any) => {
       window.location.href = "/labLogin";
     }
   } else {
-    toast.error(message); // ✅ Always show a relevant message
+    toast.error(message); //  Always show a relevant message
   }
 
   return Promise.reject({ ...error });
@@ -90,7 +94,8 @@ const errorHandler = (error: any) => {
 
 // Axios Instance
 const axiosInstance = axios.create({
-  baseURL: "https://localhost:7227/api/", // Change if needed
+  // baseURL: "https://localhost:7227/api/", // Change if needed
+    baseURL: "https://test.hfiles.co.in/api/", // Change if needed
 });
 
 // Attach interceptors

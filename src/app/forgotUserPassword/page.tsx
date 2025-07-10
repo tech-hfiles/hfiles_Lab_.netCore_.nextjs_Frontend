@@ -11,26 +11,41 @@ import { faEye, faEyeSlash, faLock } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/navigation';
 import {  LoginOTP,  UserForgotPassword , ForgotPasswordUser , UserOTPVerify} from '@/services/labServiceApi';
 
+const getStoredUserId = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("userId");
+  }
+  return null;
+};
+const getStoredRecipientEmail = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem('recipientEmail');
+  }
+  return null;
+};
+
 const ForgotPasswordUserPage = () => {
   const [step, setStep] = useState(1);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [email, setEmail] = useState('') as any; 
+  // const [email, setEmail] = useState('') as any; 
   const [isLoading, setIsLoading] = useState(false);
   const [isOtpVerified, setIsOtpVerified] = useState(false);
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
   const inputRefs = useRef<HTMLInputElement[]>([]);
-    const userId = localStorage.getItem("userId");
+    // const userId = localStorage.getItem("userId");
+     const [userId] = useState<string | null>(getStoredUserId);
+     const [email] = useState<string | null>(getStoredRecipientEmail);
 
   const [timer, setTimer] = useState(300);
   const router = useRouter();
 
-  useEffect(() => {
-    const storedEmail = localStorage.getItem('recipientEmail');
-    if (storedEmail) {
-      setEmail(storedEmail);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const storedEmail = localStorage.getItem('recipientEmail');
+  //   if (storedEmail) {
+  //     setEmail(storedEmail);
+  //   }
+  // }, []);
 
   const otpFormik = useFormik({
     initialValues: {
@@ -147,7 +162,7 @@ const ForgotPasswordUserPage = () => {
           };
       
           const response = await UserForgotPassword(payload);
-            localStorage.setItem("recipientEmail", email); 
+            localStorage.setItem("recipientEmail", email || ""); 
             toast.success(response.data.message);
         } catch (error) {
           console.error("Error during forgot password:", error);
@@ -172,7 +187,7 @@ const ForgotPasswordUserPage = () => {
         <h1 className="text-3xl sm:text-4xl font-bold text-left text-gray-800 mb-2">Forgot</h1>
         <h1 className="text-3xl sm:text-4xl font-bold text-left text-gray-800 mb-6">Password?</h1>
         <p className="text-left text-sm text-black mb-4">
-          An OTP has been sent to your email: <span className="text-blue-900">{maskEmail(email)}</span>
+          An OTP has been sent to your email: <span className="text-blue-900">{maskEmail(email || "")}</span>
         </p>
 
         {step === 1 ? (

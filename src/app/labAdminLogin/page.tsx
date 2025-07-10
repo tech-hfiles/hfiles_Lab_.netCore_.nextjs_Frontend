@@ -17,6 +17,27 @@ interface CardData {
   hfid: string;
   profilePhoto: string;
 }
+const getStoredUserId = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("userId");
+  }
+  return null;
+};
+
+const getStoredEmail = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("emailId");
+  }
+  return null;
+};
+
+const getStoredToken = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("authToken");
+  }
+  return null;
+};
+
 
 const AdminLogins = () => {
   const router = useRouter();
@@ -24,9 +45,11 @@ const AdminLogins = () => {
   const [cardListData, setCardListData] = useState<CardData[]>([]) as any;
   const [memberListData, setMemberListData] = useState<any[]>([]);
   const [showPassword, setShowPassword] = useState(false);
-
-  const userId = localStorage.getItem("userId");
-  const email = localStorage.getItem("emailId");
+  const [userId] = useState<string | null>(getStoredUserId);
+  const [email] = useState<string | null>(getStoredEmail);
+ const [token] = useState<string | null>(getStoredToken);
+  // const userId = localStorage.getItem("userId");
+  // const email = localStorage.getItem("emailId");
 
   const formik = useFormik({
     initialValues: {
@@ -64,7 +87,7 @@ const AdminLogins = () => {
     },
   });
 
-  const token = localStorage.getItem("authToken");
+  // const token = localStorage.getItem("authToken");
 
   if (token) {
     try {

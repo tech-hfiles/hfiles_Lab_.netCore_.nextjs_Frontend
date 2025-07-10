@@ -10,11 +10,18 @@ import { faEye, faEyeSlash, faLock } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/navigation';
 import { ForgotPasswordReq, LoginOTP, passwordForgot, UserOTPVerify } from '@/services/labServiceApi';
 
+const getStoredRecipientEmail = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem('recipientEmail');
+  }
+  return null;
+};
+
 const ForgotPasswordPage = () => {
   const [step, setStep] = useState(1);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [email, setEmail] = useState('') as any; // or get from props/state
+  // const [email, setEmail] = useState('') as any; // or get from props/state
   const [isLoading, setIsLoading] = useState(false);
   const [isOtpVerified, setIsOtpVerified] = useState(false);
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
@@ -22,13 +29,14 @@ const ForgotPasswordPage = () => {
 
   const [timer, setTimer] = useState(300);
   const router = useRouter();
+   const [email] = useState<string | null>(getStoredRecipientEmail);
 
-  useEffect(() => {
-    const storedEmail = localStorage.getItem('recipientEmail');
-    if (storedEmail) {
-      setEmail(storedEmail);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const storedEmail = localStorage.getItem('recipientEmail');
+  //   if (storedEmail) {
+  //     setEmail(storedEmail);
+  //   }
+  // }, []);
 
   const otpFormik = useFormik({
     initialValues: {
@@ -193,7 +201,7 @@ const ForgotPasswordPage = () => {
         <h1 className="text-3xl sm:text-4xl font-bold text-left text-gray-800 mb-2">Forgot</h1>
         <h1 className="text-3xl sm:text-4xl font-bold text-left text-gray-800 mb-6">Password?</h1>
         <p className="text-left text-sm text-black mb-4">
-          An OTP has been sent to your email: <span className="text-blue-900">{maskEmail(email)}</span>
+          An OTP has been sent to your email: <span className="text-blue-900">{maskEmail(email || '')}</span>
         </p>
 
         {step === 1 ? (

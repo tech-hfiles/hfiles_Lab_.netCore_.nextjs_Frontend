@@ -10,23 +10,51 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
 import { LogOut, RotateCcw } from 'lucide-react';
 
+const getStoredUserId = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("userId");
+  }
+  return null;
+};
+
+const getStoredRole = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("role");
+  }
+  return null;
+};
+
+
+const getStoredUserName = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("username");
+  }
+  return null;
+};
+
 
 const LabHeader = () => {
-  const username = localStorage.getItem("username")
-   const Role = localStorage.getItem("role");
+  // const username = localStorage.getItem("username")
+  //  const Role = localStorage.getItem("role");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showDrawer, setShowDrawer] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [formattedStart, setFormattedStart] = useState("");
   const [formattedEnd, setFormattedEnd] = useState("");
-  const userId = localStorage.getItem("userId");
+  // const userId = localStorage.getItem("userId");
   const [notifyList, setNotifyList] = useState() as any;
   const [activeTab, setActiveTab] = useState<'today' | 'week' | 'all'>('today');
   const prevNotificationIds = useRef<Set<number>>(new Set());
   const router = useRouter();
   const [dropdownAnimating, setDropdownAnimating] = useState(false);
 
+  // const [userId, setUserId] = useState<string | null>(null);
+  const [userId] = useState<string | null>(getStoredUserId);
+  const [Role] = useState<string | null>(getStoredRole);
+  const [username] = useState<string | null>(getStoredUserName);
+
+   
   
   // Close dropdown when clicking outside
   useEffect(() => {

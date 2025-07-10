@@ -17,13 +17,23 @@ type LabInfo = {
   hfid: number;
   labName: string;
 };
+// This works immediately on client
+const getStoredEmail = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("emailId");
+  }
+  return null;
+};
 
 const Sidebar = ({ className = "" }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const pathname = usePathname();
-  const emailId =localStorage.getItem('emailId');
+  // const emailId =localStorage.getItem('emailId');
   const [labName, setLabName] = useState<LabInfo[]>([]) as any;
+  const [email] = useState<string | null>(getStoredEmail);
+
+
 
   // Handle responsive behavior
   useEffect(() => {
@@ -53,20 +63,19 @@ const Sidebar = ({ className = "" }) => {
     return pathname === path;
   };
 
-  const ListData = async () =>{
- const res = await SidebarData(String(emailId));
- setLabName(res.data.data)
- }
+  const ListData = async () => {
+    const res = await SidebarData(String(email));
+    setLabName(res.data.data)
+  }
 
- useEffect(() =>{
-ListData();
-},[])
+  useEffect(() => {
+    ListData();
+  }, [])
 
   return (
     <div
-      className={`flex flex-col bg-gradient-to-b from-blue-200 to-blue-100 ${
-        collapsed ? "w-16" : "w-64"
-      } transition-all duration-300 ease-in-out overflow-y-auto h-screen ${className} shadow-md`}
+      className={`flex flex-col bg-gradient-to-b from-blue-200 to-blue-100 ${collapsed ? "w-16" : "w-64"
+        } transition-all duration-300 ease-in-out overflow-y-auto h-screen ${className} shadow-md`}
     >
       {/* Toggle Button */}
       <button
@@ -103,15 +112,14 @@ ListData();
 
       {/* User ID */}
       <div
-        className={`px-4 py-2 text-center ${
-          collapsed ? "text-xs" : "text-sm"
-        } bg-gradient-to-r from-blue-300 to-white`}
+        className={`px-4 py-2 text-center ${collapsed ? "text-xs" : "text-sm"
+          } bg-gradient-to-r from-blue-300 to-white`}
       >
         <span className="text-black">
           {collapsed ? "ID" : `HF_Id: ${labName.hfid}`}
         </span>
       </div>
- 
+
       {/* Main content with navigation and bottom image */}
       <div className="flex flex-col flex-grow">
         {/* Navigation Links */}
@@ -120,11 +128,10 @@ ListData();
             <li>
               <Link
                 href="/labHome"
-                className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
-                  isActive("/labHome")
+                className={`flex items-center px-4 py-2 rounded-lg transition-colors ${isActive("/labHome")
                     ? "text-blue-600"
                     : "text-black hover:bg-blue-200"
-                }`}
+                  }`}
               >
                 <FontAwesomeIcon icon={faHome} className="w-5 h-5" />
                 {!collapsed && <span className="ml-4">Home</span>}
@@ -134,11 +141,10 @@ ListData();
             <li>
               <Link
                 href="/labProfile"
-                className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
-                  isActive("/labProfile")
+                className={`flex items-center px-4 py-2 rounded-lg transition-colors ${isActive("/labProfile")
                     ? "text-blue-600"
                     : "text-black hover:bg-blue-200"
-                }`}
+                  }`}
               >
                 <FontAwesomeIcon icon={faUser} className="w-5 h-5" />
                 {!collapsed && <span className="ml-4">Profile</span>}
@@ -147,11 +153,10 @@ ListData();
             <li>
               <Link
                 href="/labForms"
-                className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
-                  isActive("/labForms")
+                className={`flex items-center px-4 py-2 rounded-lg transition-colors ${isActive("/labForms")
                     ? "text-blue-600"
                     : "text-black hover:bg-blue-200"
-                }`}
+                  }`}
               >
                 <FontAwesomeIcon icon={faFileAlt} className="w-5 h-5" />
                 {!collapsed && <span className="ml-4">Forms</span>}

@@ -15,6 +15,13 @@ interface PageProps {
   CardList: any;
   adminsList: any;
 }
+const getStoredRole = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("role");
+  }
+  return null;
+};
+
 
 const LabAllMemberPage: React.FC<PageProps> = ({ filteredData, CardList, adminsList }) => {
   const [showCheckboxes, setShowCheckboxes] = useState(false);
@@ -27,12 +34,14 @@ const LabAllMemberPage: React.FC<PageProps> = ({ filteredData, CardList, adminsL
   const [selectedMemberId, setSelectedMemberId] = useState<Number | null>(null);
   const [selectedMemberIds, setSelectedMemberIds] = useState<Number | null>(null);
   const [isModalOpens, setIsModalOpens] = useState(false);
-  const [role, setRole] = useState<string | null>(null);
+  // const [role, setRole] = useState<string | null>(null);
+    const [Role] = useState<string | null>(getStoredRole);
 
-    useEffect(() => {
-    const storedRole = localStorage.getItem("role");
-    setRole(storedRole);
-  }, []);
+
+  //   useEffect(() => {
+  //   const storedRole = localStorage.getItem("role");
+  //   setRole(storedRole);
+  // }, []);
 
 
   const BASE_URL = "https://hfiles.in/upload/";
@@ -189,7 +198,7 @@ const LabAllMemberPage: React.FC<PageProps> = ({ filteredData, CardList, adminsL
                     </div>
 
                     {/* Remove Member Button */}
-                    {adminMode && member.role === "Admin" && role !== "Member" && (
+                    {adminMode && member.role === "Admin" && Role !== "Member" && (
                       <div className="flex justify-end mt-2">
 
                         <button
@@ -232,7 +241,7 @@ const LabAllMemberPage: React.FC<PageProps> = ({ filteredData, CardList, adminsL
         </div>
 
         <div className="mt-2 flex justify-end mb-4 gap-3">
-          {role !== "Member" &&
+          {Role !== "Member" &&
             <button
               className="primary text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700 flex items-center gap-2 cursor-pointer"
               onClick={() => {
@@ -243,7 +252,7 @@ const LabAllMemberPage: React.FC<PageProps> = ({ filteredData, CardList, adminsL
               {superCheckBox ? "Cancel" : "Super Admin"}
             </button>
           }
-          {role !== "Member" &&
+          {Role !== "Member" &&
             <button
               className="primary text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700 flex items-center gap-2 cursor-pointer"
               onClick={() => {
@@ -263,7 +272,7 @@ const LabAllMemberPage: React.FC<PageProps> = ({ filteredData, CardList, adminsL
         <div className="p-4">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold text-blue-600">Team:</h2>
-            {role !== "Member" &&
+            {Role !== "Member" &&
               <button
                 type="button"
                 className="bg-yellow-300 text-black px-4 py-2 rounded font-medium flex items-center gap-2 shadow hover:bg-yellow-400 cursor-pointer"
@@ -358,7 +367,7 @@ const LabAllMemberPage: React.FC<PageProps> = ({ filteredData, CardList, adminsL
                     </div>
 
                     {/* Remove Member Button - Outside the card, centered below */}
-                    {manageMode && role !== "Member" && (
+                    {manageMode && Role !== "Member" && (
                       <div className="flex justify-end mt-2">
                         <button
                           type="button"
@@ -397,7 +406,7 @@ const LabAllMemberPage: React.FC<PageProps> = ({ filteredData, CardList, adminsL
                 );
               })}
             </div>
-            {manageMode && role !== "Member" && (
+            {manageMode && Role !== "Member" && (
               <div className="flex justify-center mt-6">
                 <button
                   type="button"

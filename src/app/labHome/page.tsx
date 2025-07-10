@@ -30,6 +30,14 @@ type Patient = {
   userId: string;
 };
 
+
+const getStoredUserId = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("userId");
+  }
+  return null;
+};
+
 const page = () => {
 
   const [calendarOpen, setCalendarOpen] = useState(false);
@@ -42,7 +50,7 @@ const page = () => {
   const pageSize = 20;
   const [formattedStart, setFormattedStart] = useState("");
   const [formattedEnd, setFormattedEnd] = useState("");
-  const userId = localStorage.getItem("userId");
+  // const userId = localStorage.getItem("userId");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [patientCount, setPatientCount] = useState() as any;
   const [allReport, setAllReports] = useState() as any;
@@ -52,6 +60,7 @@ const page = () => {
 //   const storedUserId = localStorage.getItem("userId");
 //   setUserId(storedUserId);
 // }, []);
+const [userId] = useState<string | null>(getStoredUserId);
 
 
 

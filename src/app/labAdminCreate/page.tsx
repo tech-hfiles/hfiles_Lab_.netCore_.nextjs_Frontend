@@ -11,17 +11,41 @@ import { useRouter } from 'next/navigation'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
+
+const getStoredUserId = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("userId");
+  }
+  return null;
+};
+
+const getStoredEmail = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("emailId");
+  }
+  return null;
+};
+
+const getStoredToken = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("authToken");
+  }
+  return null;
+};
 const AdminCreates = () => {
   
   const router = useRouter();
-  const userId = localStorage.getItem("userId");
-  const email = localStorage.getItem("emailId");
+  // const userId = localStorage.getItem("userId");
+  // const email = localStorage.getItem("emailId");
   const [userInfo, setUserInfo] = useState<{ username: string; userEmail: string; } | null>(null)
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [isHFIDValid, setIsHFIDValid] = useState(false);
   const [checking, setChecking] = useState(false);
+  const [userId] = useState<string | null>(getStoredUserId);
+    const [email] = useState<string | null>(getStoredEmail);
+    const [token] = useState<string | null>(getStoredToken);
 
   const validateHFID = async (hfid: string) => {
     try {
@@ -84,11 +108,6 @@ const AdminCreates = () => {
       }
     },
   });
-
-  // Step 1: Get token from localStorage
-  const token = localStorage.getItem("authToken");
- 
-
 
 
   if (token) {
